@@ -5,7 +5,7 @@ from django.shortcuts import render, HttpResponse
 def index(request):
     return render(request, 'frontpage.html')
 
-def test(request):
+def lastOppFiler(request):
     #if request.method == 'POST':
 
 

@@ -4,5 +4,5 @@ from findbestroute.views import *
 
 
 urlpatterns = [
-    url(r'^$', test, name='test')
+    url(r'^$', lastOppFiler(), name='last_opp_filer')
 ]
