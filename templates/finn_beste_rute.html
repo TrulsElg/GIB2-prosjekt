@@ -2,6 +2,29 @@
 {% load static %}
 {% block title %}Last opp fil{% endblock %}
 {% block content %}
-    <p>Her må du laste opp en fil</p>
-    <img src="{% static 'images/example_image.jpg'%}" >
+    <div align="center" style="width: 400px">
+        <h4>Her må du laste opp tre filer</h4>
+        <!--<img src="{% static 'images/example_image.jpg'%}" > -->
+
+        <form id="submit" action="" method="post">
+            {% csrf_token %}
+
+            <div style="margin: 50px; border: 1px solid #4CAF50;">
+                <p style="margin-top: 20px">Shapefil med flater:</p>
+                <input name="file1" type="file">
+                <p style="margin-top: 20px">Shapefil med linjer:</p>
+                <input name="file2" type="file">
+                <p style="margin-top: 20px">Shapefil med punkter:</p>
+                <input name="file3" type="file">
+            </div>
+
+
+
+
+            <div class="col-md-12" id="submitContainer">
+                <button class="btn btn-primary btn-lg" type="submit">Last opp</button>
+            </div>
+
+        </form>
+    </div>
 {% endblock %}
