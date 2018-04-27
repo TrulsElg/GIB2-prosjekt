@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bildeliste{% endblock %}
+{% block content %}
+    <div align="center" style="width: 400px">
+
+        <p>{{ text }}</p>
+
+        {% if images %}
+
+            {% for image in images %}
+                <p>{{ image.pk }}</p>
+                <a href="{% url 'bilde' image.pk%}"><img src="{{ image.bilde.url }}"></a>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+{% endblock %}

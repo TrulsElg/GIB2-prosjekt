@@ -41,6 +41,15 @@
           <ul class="nav navbar-nav">
               <li><a href="/">Index</a></li>
               <li><a href="/finnbesterute">Finn</a></li>
+              <li><a href="/finnbesterute/lastoppbilde">Last opp bilde</a></li>
+              <li><a href="/finnbesterute/visbilder">Bilder</a></li>
+              <li><a href="/user/signup">Sign up</a> </li>
+              {% if user.is_authenticated %}
+                  <li><a>Profile</a></li>
+                  <li><a href="/user/logout">Logout</a> </li>
+              {% else %}
+                  <li><a href="/user/login">Login</a> </li>
+              {% endif %}
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
