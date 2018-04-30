@@ -6,7 +6,7 @@
         <h4>Her må du laste opp tre filer</h4>
         <!--<img src="{% static 'images/example_image.jpg'%}" > -->
 
-        <form id="submit" action="" method="post">
+        <form id="submit" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div style="margin: 50px; border: 1px solid #4CAF50;">
@@ -17,7 +17,6 @@
                 <p style="margin-top: 20px">Shapefil med punkter:</p>
                 <input name="file3" type="file">
             </div>
-
 
 
 
