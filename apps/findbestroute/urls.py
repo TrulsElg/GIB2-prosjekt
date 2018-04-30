@@ -9,5 +9,6 @@ urlpatterns = [
     url('bilde/(\d+)', visBilde, name='bilde'),
     url(r'^last_opp_filer', last_opp_filer, name='last_opp_filer'),
     url(r'^analyse', analyse, name='analyse'),
+    url(r'^vis_filer', vis_filer, name='vis_filer'),
 
 ]

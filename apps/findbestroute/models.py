@@ -11,15 +11,15 @@ from django.core.validators import FileExtensionValidator
 
 class MultiUpload(models.Model):
     """"
-    Burde ha folgende:
+    Burde ha:
         0. Egen mappe for hver bruker
         1. Liste over tillate filformat
     """
-    owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
+    uploader = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
     files = models.FileField(
-        upload_to='data_files/' + PathUser.__name__ + '/',
+        upload_to='data_files/',
         validators=[FileExtensionValidator(
-            allowed_extensions=['OCD', ])])
+            allowed_extensions=['ocd', 'ocad'])])
     timestamp = models.TimeField(auto_now=True)
 
     def find_best_route(self, files):
@@ -38,7 +38,7 @@ def user_directory_path(instance, filename):
 
 class Image(models.Model):
     uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
-    bilde = models.ImageField(upload_to='bilder/' + PathUser.__name__ + '/')
+    bilde = models.ImageField(upload_to='bilder/')
 
     def get_absolute_url(self):
         return reverse('bilde', args=(self.pk,))

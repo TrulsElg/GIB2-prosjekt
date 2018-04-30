@@ -3,6 +3,7 @@ from apps.findbestroute.models import *
 
 from apps.findbestroute.forms import ImageUploadForm
 import forms
+from django.views.generic.edit import FormView
 import os
 from django.conf import settings
 
@@ -22,21 +23,34 @@ def file_upload(request):
 
 
 def last_opp_filer(request):
-    form = forms.MultiUploadForm(request.POST)
-    files = request.FILES.getlist('file_field')
     if request.method == 'POST':
+        form = forms.MultiUploadForm(request.POST)
         if form.is_valid():
+            files = request.FILES.getlist('files')
             for f in files:
-                f.save()
-                pass
+                m = MultiUpload()
+                m.uploader = request.user
+                m.files = f
+                m.save()
     #                ...  # Do something with each file.
             # valid files received; do analysis maybe?
             return HttpResponseRedirect(analyse(request))
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
 
+def vis_filer(request):
+    files = MultiUpload.objects.filter(uploader=request.user)
+    if files is None:
+        return render(request, 'vis_filer.html', {'files': files})
+    else:
+        return render(request, 'vis_filer.html')
+
+#        text = 'Du har ' + str(filer.__len__()) + ' filer'
+
 
 def analyse(request):
+    # FIXME kjor analysen, hvordan det enn skal gjores.
+    # Kanskje sende resultat til brukerens email pga async?
     template_name = 'analyse.html'  # Replace with your template.
     success_url = 'analyse'  # Replace with your URL or reverse().
     render(request, template_name=template_name)
@@ -64,7 +78,7 @@ def lastOppBilder(request):
 
 
 def listOppBilder(request):
-    imageModels = Image.objects.all()
+    imageModels = Image.objects.filter(uploader=request.user)
     if imageModels.__len__()>0:
         text = "There exists "+str(imageModels.__len__())+" images in database"
     else:
@@ -76,3 +90,5 @@ def listOppBilder(request):
 def visBilde(request, image_id):
     image = Image.objects.get(pk=image_id)
     return render(request, 'vis_bilde.html', {'Image': image})
+
+

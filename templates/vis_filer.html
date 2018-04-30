@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Suksess!{% endblock %}
+{% block title %}Bildeliste{% endblock %}
 {% block content %}
     <div align="center" style="width: 400px">
 
-        <p>Lastet opp av bruker: {{ owner }}</p>
-{% comment %}
-        {% for files in MultiUpload.get_user_upload_collection() %}
-            <div>{ % MultiUpload.get_user_upload_collection() %} </div>
-        {% endfor %}
-{% endcomment %}
+        <p>{{ asdflkjasdflkjasdf }}</p>
+
+        {% if files %}
+
+            {% for file in files %}
+                <p>{{ file }}</p>
+            {% endfor %}
+            {% else %}
+            <p>Du har ikke lastet opp noen filer.</p>
+        {% endif %}
 
     </div>
 {% endblock %}
