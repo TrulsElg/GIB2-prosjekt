@@ -21,30 +21,30 @@ def file_upload(request):
 """
 
 
-def upload_files(request):
-    form_class = forms.MultipleFileUploadForm
-    template_name = 'uploadFiles.html'  # Replace with your template.
-    success_url = 'uploadFiles'  # Replace with your URL or reverse().
-
-    def post(self, request):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        files = request.FILES.getlist('file_field')
+def last_opp_filer(request):
+    form = forms.MultiUploadForm(request.POST)
+    files = request.FILES.getlist('file_field')
+    if request.method == 'POST':
         if form.is_valid():
             for f in files:
                 f.save()
                 pass
-#                ...  # Do something with each file.
-            # valid files received
-            return HttpResponse()
-        else:
-            return self.form_invalid(form)
-
-    return render(request, 'finn_beste_rute.html')
+    #                ...  # Do something with each file.
+            # valid files received; do analysis maybe?
+            return HttpResponseRedirect(analyse(request))
+    form = forms.MultiUploadForm()
+    return render(request, 'last_opp_filer.html', {'form': form})
 
 
-def handle_uploaded_file(f, fileOwner):
-    with open('some/file/'+fileOwner + '/', 'wb+') as destination:
+def analyse(request):
+    template_name = 'analyse.html'  # Replace with your template.
+    success_url = 'analyse'  # Replace with your URL or reverse().
+    render(request, template_name=template_name)
+    pass
+
+
+def handle_uploaded_file(f, file_owner):
+    with open('uploads/'+file_owner + '/', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
@@ -59,8 +59,6 @@ def lastOppBilder(request):
             m.save()
             return HttpResponseRedirect(m.get_absolute_url())
 
-
-
     form = ImageUploadForm()
     return render(request, 'bildeopplasting.html', {'form': form})
 
@@ -72,11 +70,9 @@ def listOppBilder(request):
     else:
         text = "There are no images in the database"
 
-
     return render(request, 'list_opp_bilder.html', {'text': text, 'images': imageModels})
 
 
 def visBilde(request, image_id):
-    image=Image.objects.get(pk=image_id)
-
+    image = Image.objects.get(pk=image_id)
     return render(request, 'vis_bilde.html', {'Image': image})

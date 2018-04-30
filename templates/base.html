@@ -45,6 +45,8 @@
               <li><a href="/finnbesterute/visbilder">Bilder</a></li>
               <li><a href="/user/signup">Sign up</a> </li>
               {% if user.is_authenticated %}
+                  <li><a href="/finnbesterute/last_opp_filer">Ny analyse</a></li>
+                  <li><a href="/finnbesterute/vis_filer">Filer</a></li>
                   <li><a>Profile</a></li>
                   <li><a href="/user/logout">Logout</a> </li>
               {% else %}

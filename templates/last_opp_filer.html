@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Last opp orienteringsfiler{% endblock %}
+{% block content %}
+    <div align="center" style="width: 400px">
+        <h4>Last opp noen filer for veianalyse</h4>
+
+        <!--<img src="{% static 'images/example_image.jpg'%}" > -->
+
+        {% if user.is_authenticated %}
+            <form id="submit" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="margin: 50px; border: 1px solid #4CAF50;">
+                    {% for field in form %}
+                        <p>
+                            {{ field.label_tag }}<br>
+                            {{ field }}
+                            {% if field.help_text %}
+                              <small style="color: grey">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                              <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                        </p>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-12" id="submitContainer">
+                    <button class="btn btn-primary btn-lg" type="submit">Last opp</button>
+                </div>
+
+            </form>
+
+
+        {% else %}
+            <p>Du må være logget inn for å laste opp filer</p>
+        {% endif %}
+
+
+
+        </form>
+    </div>
+{% endblock %}
