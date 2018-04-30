@@ -27,23 +27,27 @@ def last_opp_filer(request):
         form = forms.MultiUploadForm(request.POST)
         if form.is_valid():
             files = request.FILES.getlist('files')
+            n = MultiUpload()
+            n.uploader = request.user
+            n.files = files
+            n.save()
             for f in files:
                 m = MultiUpload()
                 m.uploader = request.user
                 m.files = f
                 m.save()
-    #                ...  # Do something with each file.
+#                ...  # Do something with each file.
             # valid files received; do analysis maybe?
             return HttpResponseRedirect(analyse(request))
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
 
+
 def vis_filer(request):
     files = MultiUpload.objects.filter(uploader=request.user)
     if files is None:
         return render(request, 'vis_filer.html', {'files': files})
-    else:
-        return render(request, 'vis_filer.html')
+    return render(request, 'vis_filer.html')
 
 #        text = 'Du har ' + str(filer.__len__()) + ' filer'
 
