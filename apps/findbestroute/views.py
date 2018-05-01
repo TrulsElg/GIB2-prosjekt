@@ -33,10 +33,10 @@ def vis_filer(request):
 
 def last_opp_filer(request):
     if request.method == 'POST':
-        print('Correct request method...')
+        #print('Correct request method...')
         form = forms.MultiUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            print('Form is valid...')
+            #print('Form is valid...')
             files = request.FILES.getlist('files')
             for f in files:
                 m = UploadedFile()
@@ -45,7 +45,7 @@ def last_opp_filer(request):
                 if UploadedFile.objects.filter(
                         uploader=request.user,
                         file=f):
-                    print('skipped file')
+                    #print('skipped file')
                     continue    # file already exists.
                 m.save()
                 # One entry in the DB per file
