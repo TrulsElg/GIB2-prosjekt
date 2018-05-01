@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 
 CELERY_BROKER_URL = 'amqp://localhost'
 
+CELERY_TASK_SOFT_TIME_LIMIT = 60*60*24
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

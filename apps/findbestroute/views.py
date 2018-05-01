@@ -5,7 +5,6 @@ from apps.findbestroute.models import *
 from apps.findbestroute.forms import ImageUploadForm
 import forms
 import os
-from django.conf import settings
 import os.path
 from django.conf import settings
 from django import forms as fo
@@ -49,8 +48,10 @@ def last_opp_filer(request):
                 m.file = f
                 m.save()
                 # One entry in the DB per file
-            # valid files received; do analysis maybe?
-            return analyse(request, files)
+            # FIXME files kan ikke passes; må på en eller annen måte passe objektene
+            # og referere tilbake til selve filene når analyse skal gjøres
+            return analyse(request.user,
+                           files)
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
 
@@ -69,18 +70,21 @@ def lastOppBilder(request):
     return render(request, 'bildeopplasting.html', {'form': form})
 
 
-def analyse(request, files):
+def analyse(user, files):
     # TODO: analysen, hvordan det enn skal gjores...
 
-    # trigger async. process
-    tasks.find_best_route.delay(request.user, files)
+    # trigger async. processes
+    tasks.test.delay(25, user)
+    print('Trying to test')
+
+    print('Trying to make best route')
+    tasks.find_best_route.delay(user, files)
 
     # Etter at analysen er gjort:
-#    UploadedFile.objects.filter(uploader=request.user).delete()
-#    print('Filer har blitt slettet.')
+    print('Filer har blitt slettet.')
 
     # redirect
-    return render(request, template_name='analyse.html')
+    return render(template_name='analyse.html')
 
 
 
