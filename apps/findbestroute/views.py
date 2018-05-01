@@ -3,7 +3,6 @@ from apps.findbestroute.models import *
 
 from apps.findbestroute.forms import ImageUploadForm
 import forms
-from django.views.generic.edit import FormView
 import os
 from django.conf import settings
 
@@ -22,49 +21,38 @@ def file_upload(request):
 """
 
 
+def vis_filer(request):
+    file_objects = UploadedFile.objects.filter(uploader=request.user)
+    files = list()
+    for fo in file_objects:
+        files.append(fo.file)
+    if files is not None:
+        return render(request, 'vis_filer.html', {'files': files})
+    return render(request, 'vis_filer.html', {'files': None})
+
+
 def last_opp_filer(request):
     if request.method == 'POST':
-        form = forms.MultiUploadForm(request.POST)
+        print('Correct request method...')
+        form = forms.MultiUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            print('Form is valid...')
             files = request.FILES.getlist('files')
-            n = MultiUpload()
-            n.uploader = request.user
-            n.files = files
-            n.save()
             for f in files:
-                m = MultiUpload()
+                m = UploadedFile()
                 m.uploader = request.user
-                m.files = f
+                m.file = f
+                if UploadedFile.objects.filter(
+                        uploader=request.user,
+                        file=f):
+                    continue    # file already exists.
                 m.save()
-#                ...  # Do something with each file.
+                # One entry in the DB per file
             # valid files received; do analysis maybe?
-            return HttpResponseRedirect(analyse(request))
+            return analyse(request)
+    print('Form is not valid!')
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
-
-
-def vis_filer(request):
-    files = MultiUpload.objects.filter(uploader=request.user)
-    if files is None:
-        return render(request, 'vis_filer.html', {'files': files})
-    return render(request, 'vis_filer.html')
-
-#        text = 'Du har ' + str(filer.__len__()) + ' filer'
-
-
-def analyse(request):
-    # FIXME kjor analysen, hvordan det enn skal gjores.
-    # Kanskje sende resultat til brukerens email pga async?
-    template_name = 'analyse.html'  # Replace with your template.
-    success_url = 'analyse'  # Replace with your URL or reverse().
-    render(request, template_name=template_name)
-    pass
-
-
-def handle_uploaded_file(f, file_owner):
-    with open('uploads/'+file_owner + '/', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
 
 
 def lastOppBilder(request):
@@ -79,6 +67,22 @@ def lastOppBilder(request):
 
     form = ImageUploadForm()
     return render(request, 'bildeopplasting.html', {'form': form})
+
+#        text = 'Du har ' + str(filer.__len__()) + ' filer'
+
+def analyse(request):
+    # FIXME kjor analysen, hvordan det enn skal gjores.
+    # Kanskje sende resultat til brukerens email pga async?
+    template_name = 'analyse.html'  # Replace with your template.
+    success_url = 'analyse'  # Replace with your URL or reverse().
+    return render(request, template_name=template_name)
+
+
+def handle_uploaded_file(f, file_owner):
+    with open('uploads/'+file_owner + '/', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
 
 
 def listOppBilder(request):

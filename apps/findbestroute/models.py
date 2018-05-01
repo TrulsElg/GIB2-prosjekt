@@ -9,18 +9,21 @@ from django.core.validators import FileExtensionValidator
 # Create your models here.
 
 
-class MultiUpload(models.Model):
+class UploadedFile(models.Model):
     """"
     Burde ha:
         0. Egen mappe for hver bruker
         1. Liste over tillate filformat
     """
     uploader = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
-    files = models.FileField(
-        upload_to='data_files/',
+    file = models.FileField(
+        upload_to='data_files/',    # should be acceptable...
         validators=[FileExtensionValidator(
-            allowed_extensions=['ocd', 'ocad'])])
-    timestamp = models.TimeField(auto_now=True)
+            allowed_extensions=['ocd', 'shp'])]
+        )
+
+    def __str__(self):
+        return self.file.name
 
     def find_best_route(self, files):
         # TODO: do analysis
@@ -28,7 +31,7 @@ class MultiUpload(models.Model):
 
     @staticmethod
     def get_user_upload_collection(owner):
-        return MultiUpload.objects.filter(owner=owner)
+        return UploadedFile.objects.filter(owner=owner)
 
 
 def user_directory_path(instance, filename):
