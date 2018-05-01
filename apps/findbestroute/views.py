@@ -45,12 +45,12 @@ def last_opp_filer(request):
                 if UploadedFile.objects.filter(
                         uploader=request.user,
                         file=f):
+                    print('skipped file')
                     continue    # file already exists.
                 m.save()
                 # One entry in the DB per file
             # valid files received; do analysis maybe?
             return analyse(request)
-    print('Form is not valid!')
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
 

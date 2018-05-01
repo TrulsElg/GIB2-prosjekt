@@ -3,7 +3,8 @@
 {% block title %}Last opp orienteringsfiler{% endblock %}
 {% block content %}
     <div align="center" style="width: 400px">
-        <h4>Last opp noen filer for veianalyse</h4>
+        <h4>Last opp noen filer for veianalyse.</h4>
+        <h5><b>NB</b>: duplikater lagres ikke!</h5>
         {% if user.is_authenticated %}
             <form id="submit" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}

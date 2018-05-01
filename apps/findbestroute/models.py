@@ -8,6 +8,10 @@ from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 
+# LEGG INN SHAPE-FILTYPER HER
+valid_file_types = ['ocd', 'shp', 'dbf', 'shx', 'xml', 'prj',
+                    'shx.xml', ]
+
 
 class UploadedFile(models.Model):
     """"
@@ -19,11 +23,11 @@ class UploadedFile(models.Model):
     file = models.FileField(
         upload_to='data_files/',    # should be acceptable...
         validators=[FileExtensionValidator(
-            allowed_extensions=['ocd', 'shp'])]
+            allowed_extensions=valid_file_types)]
         )
 
     def __str__(self):
-        return self.file.name
+        return '"' + self.uploader.username + '"' + ' uploaded: ' + self.file.name
 
     def find_best_route(self, files):
         # TODO: do analysis
@@ -34,6 +38,7 @@ class UploadedFile(models.Model):
         return UploadedFile.objects.filter(owner=owner)
 
 
+# kopiert fra interwebz, gudene veit om det er nyttig
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.user.id, filename)
