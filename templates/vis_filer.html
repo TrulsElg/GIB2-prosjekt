@@ -2,14 +2,14 @@
 {% load static %}
 {% block title %}Bildeliste{% endblock %}
 {% block content %}
-    <div align="center" style="width: 400px">
+    <div align="left"  style="width: 400px; margin-left: 20px" >
 
         <p>{{ asdflkjasdflkjasdf }}</p>
 
         {% if files %}
-
             {% for file in files %}
-                <p>{{ file }}</p>
+                {{ file }} <button onclick="{}"></button>
+                <br>
             {% endfor %}
             {% else %}
             <p>Du har ikke lastet opp noen filer.</p>
