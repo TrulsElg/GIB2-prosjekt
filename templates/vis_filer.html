@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bildeliste{% endblock %}
+{% block content %}
+    <div align="center" style="width: 400px">
+
+        <p>{{ asdflkjasdflkjasdf }}</p>
+
+        {% if files %}
+
+            {% for file in files %}
+                <p>{{ file }}</p>
+            {% endfor %}
+            {% else %}
+            <p>Du har ikke lastet opp noen filer.</p>
+        {% endif %}
+
+    </div>
+{% endblock %}
