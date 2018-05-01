@@ -1,7 +1,4 @@
 from __future__ import unicode_literals
-from django.contrib.auth import login, authenticate
-import django.contrib.auth.models
-from django.db import models
 from django.urls import reverse
 from apps.userregistration.models import *
 from django.core.validators import FileExtensionValidator
@@ -15,6 +12,12 @@ valid_file_types = ['ocd', 'shp', 'dbf', 'shx', 'xml', 'prj',
                     'shx.xml', ]
 
 
+# kopiert fra interwebz, gudene veit om det er nyttig
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.uploader.id, filename)
+
+
 class UploadedFile(models.Model):
     """"
     Burde ha:
@@ -24,6 +27,7 @@ class UploadedFile(models.Model):
     uploader = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
     file = models.FileField(
         upload_to='data_files/',    # should be acceptable...
+#        upload_to=user_directory_path, #alternativt
         validators=[FileExtensionValidator(
             allowed_extensions=valid_file_types)]
         )
@@ -38,6 +42,7 @@ class UploadedFile(models.Model):
     @staticmethod
     def get_user_upload_collection(owner):
         return UploadedFile.objects.filter(owner=owner)
+
 
 # sletter filer etter at de har blitt brukt
 @receiver(models.signals.post_delete, sender=UploadedFile)
@@ -55,6 +60,11 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.user.id, filename)
+
+
+class ResultFile(models.Model):
+    owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='result_files')
 
 
 class Image(models.Model):

@@ -16,9 +16,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-
-
-
 MEDIA_ROOT = 'files/'
 MEDIA_URL = '/files/'
 
@@ -46,8 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.findbestroute',
-    'apps.userregistration'
+    'apps.userregistration',
 ]
+
+CELERY_BROKER_URL = 'amqp://localhost'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

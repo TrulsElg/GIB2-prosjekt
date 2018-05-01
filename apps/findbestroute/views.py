@@ -1,24 +1,28 @@
+# Create your views here.
+
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from apps.findbestroute.models import *
-
 from apps.findbestroute.forms import ImageUploadForm
 import forms
 import os
 from django.conf import settings
+import os.path
+from django.conf import settings
+from django import forms as fo
+import tasks
 
-# Create your views here.
+
+def clean_my_file(some_file):
+    my_file = some_file
+    destination = settings.MEDIA_ROOT + 'data_files/'
+    return False if os.path.isfile(destination + my_file.name) else my_file
+#        raise fo.ValidationError(
+#            'A file with the name "' + my_file.name + '" already exists. Please, rename your file and try again.'
+#            )
 
 
 def index(request):
     return render(request, 'frontpage.html')
-
-
-"""
-def file_upload(request):
-    save_path = os.path.join(settings.MEDIA_ROOT, 'uploads', request.FILES['file'])
-    path = default_storage.save(save_path, request.FILES['file'])
-    return default_storage.path(path)
-"""
 
 
 def vis_filer(request):
@@ -39,18 +43,14 @@ def last_opp_filer(request):
             print('Form is valid...')
             files = request.FILES.getlist('files')
             for f in files:
+                clean_my_file(f)
                 m = UploadedFile()
                 m.uploader = request.user
                 m.file = f
-                if UploadedFile.objects.filter(
-                        uploader=request.user,
-                        file=f):
-                    print('skipped file')
-                    continue    # file already exists.
                 m.save()
                 # One entry in the DB per file
             # valid files received; do analysis maybe?
-            return analyse(request)
+            return analyse(request, files)
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form})
 
@@ -69,18 +69,19 @@ def lastOppBilder(request):
     return render(request, 'bildeopplasting.html', {'form': form})
 
 
-def analyse(request):
-    # FIXME kjoyr analysen, hvordan det enn skal gjores.
-    # Kanskje sende resultat til brukerens email pga async?
-    template_name = 'analyse.html'  # Replace with your template.
-    success_url = 'analyse'  # Replace with your URL or reverse().
-    return render(request, template_name=template_name)
+def analyse(request, files):
+    # TODO: analysen, hvordan det enn skal gjores...
 
+    # trigger async. process
+    tasks.find_best_route.delay(request.user, files)
 
-def handle_uploaded_file(f, file_owner):
-    with open('uploads/'+file_owner + '/', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+    # Etter at analysen er gjort:
+#    UploadedFile.objects.filter(uploader=request.user).delete()
+#    print('Filer har blitt slettet.')
+
+    # redirect
+    return render(request, template_name='analyse.html')
+
 
 
 def listOppBilder(request):

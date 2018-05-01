@@ -1,6 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.db import models as m
 import models
 from django.core.validators import FileExtensionValidator
 
