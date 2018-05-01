@@ -18,11 +18,11 @@ class ImageUploadForm(forms.Form):
 class MultiUploadForm(forms.Form):
     # form contents and metadata
     files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                           required=True,
-                           label='Last opp filer',
-                           validators=[FileExtensionValidator(
+                            required=True,
+                            label='Last opp filer',
+                            validators=[FileExtensionValidator(
                                     allowed_extensions=valid_file_types)]
-                           )
+                            )
 
     # what to show:
     class Meta:

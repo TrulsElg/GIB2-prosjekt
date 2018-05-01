@@ -68,10 +68,9 @@ def lastOppBilder(request):
     form = ImageUploadForm()
     return render(request, 'bildeopplasting.html', {'form': form})
 
-#        text = 'Du har ' + str(filer.__len__()) + ' filer'
 
 def analyse(request):
-    # FIXME kjor analysen, hvordan det enn skal gjores.
+    # FIXME kjoyr analysen, hvordan det enn skal gjores.
     # Kanskje sende resultat til brukerens email pga async?
     template_name = 'analyse.html'  # Replace with your template.
     success_url = 'analyse'  # Replace with your URL or reverse().
@@ -82,7 +81,6 @@ def handle_uploaded_file(f, file_owner):
     with open('uploads/'+file_owner + '/', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-
 
 
 def listOppBilder(request):
