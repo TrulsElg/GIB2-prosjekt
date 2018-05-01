@@ -5,6 +5,8 @@ from django.db import models
 from django.urls import reverse
 from apps.userregistration.models import *
 from django.core.validators import FileExtensionValidator
+from django.dispatch import receiver
+import os
 
 # Create your models here.
 
@@ -36,6 +38,17 @@ class UploadedFile(models.Model):
     @staticmethod
     def get_user_upload_collection(owner):
         return UploadedFile.objects.filter(owner=owner)
+
+# sletter filer etter at de har blitt brukt
+@receiver(models.signals.post_delete, sender=UploadedFile)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding db-object is deleted.
+    """
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
 
 # kopiert fra interwebz, gudene veit om det er nyttig
