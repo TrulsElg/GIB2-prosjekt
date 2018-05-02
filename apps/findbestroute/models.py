@@ -58,5 +58,8 @@ class Image(models.Model):
     uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
     bilde = models.ImageField()
 
+    def __str__(self):
+        return '' + self.uploader.username + ' uploaded: ' + self.bilde.name
+
     def get_absolute_url(self):
         return reverse('bilde', args=(self.pk,))

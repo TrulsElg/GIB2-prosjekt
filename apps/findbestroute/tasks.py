@@ -1,19 +1,10 @@
-from celery import shared_task
-from time import sleep
-from django.core.files import File
 from apps.findbestroute.models import *
-from PIL import Image as pilImage
-from io import BytesIO
 import time
 import arcpy
 import math
 from arcpy import env
 from arcpy.sa import *
-import os
-from arcpy import mapping
-from django.conf import settings
 from celery import shared_task
-from django.core.files import File
 from apps.userregistration.models import PathUser
 from apps.findbestroute.models import UploadedFile
 from time import sleep
@@ -22,6 +13,9 @@ import models
 import os
 """
 PASSED FROM views.py: request.user; now named user.
+
+CURRENTLY BUGGED AT: line 154; trying to extract extents after they are added.
+Extents are not added properly...?
 """
 
 
@@ -50,7 +44,7 @@ def find_best_route(user):
     do_analysis(files, user)
 
     for i in range(3):
-        print('Sleeping for 3 seconds...')
+        print('Sleeping for '+ str(3-i) + ' seconds...')
         sleep(1)
 
     delete_user_uploads(uploader=user)
@@ -93,6 +87,7 @@ def getStart(pt):
         print("Failed to getStart()")
     return start
 
+
 def getDestination(pt):
     try:
         destination = arcpy.Select_analysis(pt,os.path.join(basePath, r"Trash", r"destination.shp"),'"SYMBOL" = 706')
@@ -100,6 +95,7 @@ def getDestination(pt):
     except:
         print("Failed to getStart()")
     return destination
+
 
 def setMask(start, finish):
     features = arcpy.UpdateCursor(start)
@@ -119,21 +115,76 @@ def setMask(start, finish):
 
     maskPoints = arcpy.Copy_management(start, os.path.join(basePath, r"Trash", r"maskpoints.shp"))
     cursor = arcpy.da.InsertCursor(maskPoints,("fid","SHAPE@XY"))
+
     #Insert point back left for leg direction
     cursor.insertRow((fid + 1, (startX - (directionY * length / 2) - (directionX * length / 5),
                        startY + (directionX * length / 2) - (directionY * length / 5))))
+
     #Insert point for back right for leg direction
     cursor.insertRow((fid + 2, (startX + (directionY * length / 2) - (directionX * length / 5),
                        startY - (directionX * length / 2) - (directionY * length / 5))))
+
     #Insert point for front left for leg direction
     cursor.insertRow((fid + 3, (destinationX - (directionY * length / 2) + (directionX * length / 5),
                        destinationY + (directionX * length / 2) + (directionY * length / 5))))
+
     #Insert point for front right for leg direction
     cursor.insertRow((fid + 4, (destinationX + (directionY * length / 2) + (directionX * length / 5),
                        destinationY - (directionX * length / 2) + (directionY * length / 5))))
     del cursor
     mask = arcpy.MinimumBoundingGeometry_management(maskPoints, os.path.join(basePath, r"Trash", r"mask.shp"), "RECTANGLE_BY_WIDTH")
     return mask
+
+
+def geoProcess(in_data1, destination_data):
+    # basePath = .../apps/findbestroute/workfiles/
+    print('pleaaaase   ' + basePath)
+    box = arcpy.MinimumBoundingGeometry_management(destination_data, os.path.join(basePath, "Trash", "box.shp"),
+                                                   "ENVELOPE")
+    arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
+#    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
+
+    raster = arcpy.Raster(in_data1)
+
+    inXMax = raster.extent.XMax
+    inYMax = raster.extent.YMax
+    inXMin = raster.extent.XMin
+    inYMin = raster.extent.YMin
+
+    XminValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_X")]
+    YMinValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_Y")]
+    XMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_X")]
+    YMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_Y")]
+
+    destXMin = min(XminValues)
+    destYMin = min(YMinValues)
+    destXMax = max(XMaxValues)
+    destYMax = max(YMaxValues)
+
+    sourceCP = "'" + str(inXMax) + " " + str(inYMax) + "';'" + str(inXMax) + " " + str(inYMin) + "';'" + str(
+        inXMin) + " " + str(inYMax) + "';'" + str(inXMin) + " " + str(inYMin) + "'"
+    targetCP = "'" + str(destXMax) + " " + str(destYMax) + "';'" + str(destXMax) + " " + str(destYMin) + "';'" + str(
+        destXMin) + " " + str(destYMax) + "';'" + str(destXMin) + " " + str(destYMin) + "'"
+
+    return arcpy.Warp_management(raster, sourceCP, targetCP, os.path.join(basePath, r"Results", r"geoKart.jpg"),
+                                 "POLYORDER1")
+
+
+def geometryType(infiles):
+    polygon = None
+    line = None
+    point = None
+    for file in infiles:
+        desc = arcpy.Describe(file)
+        geometry = desc.shapeType
+
+        if (geometry.lower() == "Polygon".lower()):
+            polygon = file
+        elif (geometry.lower() == "Polyline".lower()):
+            line = file
+        elif (geometry.lower() == "Point".lower()):
+            point = file
+    return polygon, line, point
 
 def getExtentOfMap(linjesymboler, SlopeL = 101.000, SlopeL2 = 102.000):
     try:
@@ -160,10 +211,6 @@ def addFileToArcMap(filepathFile, mxd):
     #except:
     #    print("Tried but failed to add file to MXD")
 
-#def addTable(excel_file, table_out_file, sheetName):
-#    hastighetInn = "../../Data/Hastighet2.xlsx"
-#    tabellUt = "../../Kladd/lopshastighet.gdb"
-#    arcpy.ExcelToTable_conversion(hastighetInn, tabellUt, "hastArk")
 
 def floorSymbols(fc):
     features = arcpy.UpdateCursor(fc)
@@ -172,16 +219,17 @@ def floorSymbols(fc):
         features.updateRow(feature)
     del feature, features
 
-#def setCost(fc, dbPath):
+
 def setCost(fc):
     try:
         arcpy.AddField_management(fc, "COST", "DOUBLE")
         features = arcpy.UpdateCursor(fc)
-        #import xlrd funker ikke. Neste to linjer er en annen losning.
+        """
+        SKAL ENDRES
+        """
         costs = [106, 201, 202, 203, 211, 212, 301, 302, 304, 305, 306, 307, 308, 309, 310, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 412, 413, 415, 502, 503, 504, 505, 506, 507, 508, 509, 526, 527, 528, 529]
         hastighet = [5, -1, -1, 5, 0.4, 0.25, -1, -1, 1, 1, 1, -1, 0.25, 1, 0.28, 0.22, 0.25, 0.28, 0.35, 0.3, 0.45, 0.45, 0.7, 0.7, 1, -1, -1, -1, 0.19, 0.19, 0.19, 0.19, 0.2, 0.22, 0.24, 0.28, -1, -1, -1, 0.19]
         for feature in features:
-            #costs = arcpy.UpdateCursor(dbPath)
             if int(math.floor(feature.SYMBOL)) in costs:
                 feature.COST = hastighet[costs.index(int(math.floor(feature.SYMBOL)))]
             features.updateRow(feature)
@@ -189,6 +237,11 @@ def setCost(fc):
     except:
         print("Tried but failed to set cost")
 
+"""
+
+HER BE MAGIC
+
+"""
 @shared_task
 def runScript(uploaderpk):
     print("Starting script")
@@ -204,33 +257,34 @@ def runScript(uploaderpk):
     if arcpy.CheckExtension("3D") == "Available":
         arcpy.CheckOutExtension("3D")
 
+    # basePath = .../apps/findbestroute/workfiles/
     global basePath
-#    print('forbanna drit KUKOST ' + settings.PROJECT_PATH)
     sleep(2)
     basePath = os.path.join(settings.PROJECT_PATH, 'apps', 'findbestroute', 'workfiles')
     env.workspace = basePath
-#    print('forbanna drit HELVEDE ' + basePath)
     sleep(2)
-# os.path.join(os.getcwd(), r"\apps\findbestroute\workfiles")
-#    basePath = os.path.join(settings.PROJECT_PATH, r"\apps\findbestroute\workfiles")
-#    basePath = os.path.join(os.getcwd(), r"\apps\findbestroute\workfiles")
 
     mxd = arcpy.mapping.MapDocument(os.path.join(basePath, r'mapdocument.mxd'))
 
-    arealsymboler = os.path.join(basePath, r"inData", r"Skog_ar.shp")
-    linjesymboler = os.path.join(basePath, r"inData", r"Skog_ln.shp")
-    punktsymboler = os.path.join(basePath, r"inData", r"Skog_pt.shp")
+    inputShape = [os.path.join(basePath, r"inData", r"Skog_ar.shp"),
+                  os.path.join(basePath, r"inData", r"Skog_ln.shp"),
+                  os.path.join(basePath, r"inData", r"Skog_pt.shp")]
+    arealsymboler, linjesymboler, punktsymboler = geometryType(inputShape)
+    kart = geoProcess(os.path.join(basePath, r"indata", r"kart.jpg"), arealsymboler)
 
     start = getStart(punktsymboler)
     destination = getDestination(punktsymboler)
-    mask = setMask(start,destination)
+    mask = setMask(start, destination)
 
     arcpy.env.mask = os.path.join(basePath, r"Trash", r"mask.shp")
 
 
     utsnitt = getExtentOfMap(linjesymboler)
 
-    hoydedata = arcpy.Clip_analysis(in_features= os.path.join(basePath, r"Trondheim5m", r"Trondheim5m.shp"), clip_features= utsnitt, out_feature_class= os.path.join(basePath, r"Trash", r"hoydedata.shp"), cluster_tolerance="")
+    hoydedata = arcpy.Clip_analysis(in_features= os.path.join(basePath, r"hoydeData", r"trondheiml.shp"),
+                                    clip_features= utsnitt,
+                                    out_feature_class= os.path.join(basePath, r"Trash", r"hoydedata.shp"),
+                                    cluster_tolerance="")
 
     #Klipper til symbolene etter mask
     ar = arcpy.Clip_analysis(in_features=arealsymboler, clip_features=mask,out_feature_class=os.path.join(basePath, r"Trash", r"a5"),cluster_tolerance="")
@@ -281,12 +335,6 @@ def runScript(uploaderpk):
     passable1 = arcpy.Update_analysis(in_features= area2, update_features=forest, out_feature_class=os.path.join(basePath, r"Trash", r"b8"))
     mapped = arcpy.Update_analysis(in_features=passable1, update_features=passableLineBuff, out_feature_class=os.path.join(basePath, r"Trash", r"b9"))
 
-    #Hente inn hastighetstabell
-    #arcpy.CreateFileGDB_management(out_folder_path= basePath, out_name= "outgdb.gdb")
-    #hastighetInn = os.path.join(basePath, r"\hasightet2.xlsx")
-    #tabellUt = os.path.join(basePath, r"\outgdb.gdb")
-    #arcpy.ExcelToTable_conversion(hastighetInn, tabellUt, "hastArk")
-
     #Sette kostnad paa alle flater
     setCost(mapped)
 
@@ -296,9 +344,6 @@ def runScript(uploaderpk):
 
     #create a TIN of the area
     tin = arcpy.CreateTin_3d(out_tin= os.path.join(basePath, r"Results", r"TIN"), spatial_reference= "#", in_features= os.path.join(basePath, r"Trash", r"hoydedata.shp") +" HOEYDE masspoints")
-    #para_in = "hoydedata.shp" + " " + "HOEYDE" + " Mass_Points <None>;" + "mask.shp" + " " + "<None>" + " Soft_Clip <None>"
-    #tin = arcpy.CreateTin_3d (out_tin= os.path.join(basePath, r"Results", r"TIN"), spatial_reference= "", in_features= para_in, constrained_delaunay="DELAUNAY")
-
 
     # Replace a layer/table view name with a path to a dataset (which can be a layer file) or create the layer/table view within the script
     # The following inputs are layers or table views: "hoydeTIN"
@@ -328,24 +373,73 @@ def runScript(uploaderpk):
     arcpy.RasterToPolygon_conversion(in_raster= os.path.join(basePath, r"Results", r"costpath"), out_polygon_features= os.path.join(basePath, r"Results", r"cpPoly.shp"), simplify="SIMPLIFY")
     arcpy.Buffer_analysis(in_features=os.path.join(basePath, r"Results", r"cpPoly.shp"), out_feature_class= os.path.join(basePath, r"Results", r"LCP.shp"), buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
-    #Klippe kartbilde
-    #klipp = arcpy.MinimumBoundingGeometry_management(mask, os.path.join(basePath, r"Trash", r"klipp"), "ENVELOPE")
-    #kart = arcpy.Clip_management(in_raster= os.path.join(basePath, r"inData", r"VikaasenReppesaasen290817.jpg"), rectangle= klipp, out_raster= os.path.join(basePath, r"inData", r"kart.jpg"))
-
     #Legge til i ArcMap
-    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"colorTemplate.lyr"))
+    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
     newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp"))
     newlayer.transparency = 50
-    #arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer, in_symbology_layer= templateLayer)
-    #layerExtent = newlayer.getExtent()
+    arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer, in_symbology_layer=templateLayer)
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
+    arcpy.MakeRasterLayer_management(in_raster=kart, out_rasterlayer=os.path.join(basePath, r"Trash", r"kart"))
+    mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"kart"))
+    arcpy.mapping.AddLayer(df, mapLayer, "BOTTOM")
+
+    # Lage postsirkler og linje og legge til dette i ArcMap
+    points = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
+                                                 out_name="points",
+                                                 geometry_type="POINT")
+    start = getStart(pt)
+    destination = getDestination(pt)
+    features = arcpy.UpdateCursor(start)
+    for feature in features:
+        startX = feature.POINT_X
+        startY = feature.POINT_Y
+    features = arcpy.UpdateCursor(destination)
+    for feature in features:
+        destX = feature.POINT_X
+        destY = feature.POINT_Y
+    cursor = arcpy.da.InsertCursor(points, ("fid", "SHAPE@XY"))
+    cursor.insertRow((1, (startX, startY)))
+    cursor.insertRow((2, (destX, destY)))
+
+    outerCircle = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
+                                                      out_name="circles1.shp",
+                                                      geometry_type="POLYGON")
+    innerCircle = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
+                                                      out_name="circles2.shp",
+                                                      geometry_type="POLYGON")
+    circle = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
+                                                 out_name="circles.shp",
+                                                 geometry_type="POLYGON",
+                                                 )
+    arcpy.Buffer_analysis(points, outerCircle, 40)
+    arcpy.Buffer_analysis(points, innerCircle, 35)
+    arcpy.Erase_analysis(outerCircle, innerCircle, circle)
+    symLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template", r"color2.lyr"))
+    circleLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"circles.shp"))
+    arcpy.ApplySymbologyFromLayer_management(in_layer=circleLayer, in_symbology_layer=symLayer)
+    arcpy.mapping.AddLayer(data_frame=df, add_layer=circleLayer, add_position="TOP")
+
+    # Lage postlinje
+    lines = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
+                                                out_name="line.shp",
+                                                geometry_type="POLYGON")
+    directionX = (destX - startX) / (math.sqrt(math.pow(destX - startX, 2) + math.pow(destY - startY, 2)))
+    directionY = (destY - startY) / (math.sqrt(math.pow(destX - startX, 2) + math.pow(destY - startY, 2)))
+    features = []
+    features.append(arcpy.Polyline(arcpy.Array([arcpy.Point(startX + 45 * directionX, startY + 45 * directionY),
+                                                arcpy.Point(destX - 45 * directionX, destY - 45 * directionY)])))
+    lineFeat = arcpy.CopyFeatures_management(features, os.path.join(basePath, r"Trash", r"lines.shp"))
+    arcpy.Buffer_analysis(in_features=lineFeat, out_feature_class=lines, buffer_distance_or_field=2.5,
+                          line_end_type="FLAT")
+    lineLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"line.shp"))
+    arcpy.ApplySymbologyFromLayer_management(in_layer=lineLayer, in_symbology_layer=symLayer)
+    arcpy.mapping.AddLayer(data_frame=df, add_layer=lineLayer, add_position="TOP")
+
     mxd.save()
-    #addFileToArcMap(os.path.join(basePath, r"Results", r"LCP.shp"), mxd)
-    addFileToArcMap(os.path.join(basePath, r"inData", r"vikaasenReppesaasen290817.jpg"), mxd)
+
 
     #Skrive ut bilde av veivalg
-#    df = arcpy.mapping.ListDataFrames(mxd)[0]
     B = df.extent.XMax - df.extent.XMin
     H = df.extent.YMax - df.extent.YMin
 
@@ -356,7 +450,7 @@ def runScript(uploaderpk):
     print(out_path)
     arcpy.mapping.ExportToPNG(map_document= mxd, out_png= out_path, data_frame= df,
                               df_export_width= int(3*B), df_export_height= int(3*H), resolution=225)
-    print "Finished making image"
+    print("Finished making image")
 
     relative_path = os.path.join(r"Dump", "MapLCP.png")
     img = Image()
