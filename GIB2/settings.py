@@ -137,3 +137,6 @@ STATICFILES_DIRS = [
 LOGIN_REDIRECT_URL = 'index'
 
 BROKER_URL ='amqp://localhost'
+
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))

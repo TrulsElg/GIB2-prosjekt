@@ -1,8 +1,11 @@
 from celery import shared_task
 from time import sleep
 
+from django.core.files import File
+
 from apps.findbestroute.models import *
 from PIL import Image as pilImage
+from io import BytesIO
 
 import time
 import arcpy
@@ -12,6 +15,7 @@ from arcpy.sa import *
 import os
 from arcpy import mapping
 from django.conf import settings
+
 
 
 @shared_task
@@ -279,16 +283,9 @@ def runScript(uploaderpk):
     B = df.extent.XMax - df.extent.XMin
     H = df.extent.YMax - df.extent.YMin
 
-    out_path = os.path.join(basePath, r"Results", r"MapLCP.png")
+    out_path = os.path.join(settings.PROJECT_PATH, r"files", r"Dump", r"MapLCP.png")
     arcpy.mapping.ExportToPNG(map_document= mxd, out_png= out_path, data_frame= df, df_export_width= int(3*B), df_export_height= int(3*H), resolution=225)
     print "Finished making image"
-
-    image = Image()
-    image.uploader = PathUser.objects.get(pk=uploaderpk)
-    print "Saving image to model/database"
-    image.bilde = pilImage.open(out_path)
-    image.save()
-    print "Saved"
 
 
     end = time.time()

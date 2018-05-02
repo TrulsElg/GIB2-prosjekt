@@ -2,16 +2,17 @@
 {% load static %}
 {% block title %}Bildeliste{% endblock %}
 {% block content %}
-    <div align="center" style="width: 400px">
+    <div align="center" style="width: 400px; padding-bottom: 20px">
 
         <p>{{ text }}</p>
 
         {% if images %}
 
             {% for image in images %}
-                <p>{{ image.pk }}</p>
-                <a href="{% url 'bilde' image.pk%}"><img src="{{ image.bilde.url }}"></a>
-
+                {% if image.bilde %}
+                    <p>Lastet opp av: {{ image.uploader }}</p>
+                    <a href="{% url 'bilde' image.pk%}"><img src="{{ image.bilde.url }}" style="max-width: 200px; max-height: 200px"></a>
+                {% endif %}
             {% endfor %}
 
         {% endif %}

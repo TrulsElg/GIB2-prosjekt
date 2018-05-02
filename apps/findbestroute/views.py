@@ -3,6 +3,8 @@ from apps.findbestroute.models import *
 
 from apps.findbestroute.forms import ImageUploadForm
 import forms
+
+from tasks import runScript
 import os
 from django.conf import settings
 
@@ -63,6 +65,7 @@ def lastOppBilder(request):
             m.uploader = request.user
             m.bilde = form.cleaned_data['bilde']
             m.save()
+            runScript.delay(request.user.pk)
             return HttpResponseRedirect(m.get_absolute_url())
 
     form = ImageUploadForm()
