@@ -38,10 +38,10 @@ def vis_filer(request):
 
 def last_opp_filer(request):
     if request.method == 'POST':
-        print('Correct request method...')
-        form = forms.MultiUploadForm(data=request.POST, files=request.FILES)
+        #print('Correct request method...')
+        form = forms.MultiUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            print('Form is valid...')
+            #print('Form is valid...')
             files = request.FILES.getlist('files')
             jpg_background = request.FILES.getlist('jpg_background')
 
