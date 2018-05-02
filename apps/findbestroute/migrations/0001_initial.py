@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='MultiUpload',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('files', models.FileField(upload_to='data_files/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['ocd', 'ocad'])])),
+                ('files', models.FileField(upload_to='test_files/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['ocd', 'ocad'])])),
                 ('uploader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

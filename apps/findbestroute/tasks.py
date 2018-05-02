@@ -5,7 +5,7 @@ from apps.findbestroute.models import UploadedFile
 from time import sleep
 from django.conf import settings
 import models
-
+import os
 """
 IMPORTANT NOTE:
 
@@ -19,6 +19,7 @@ def local_test(number, username):
         print('hurr durr  ' + str((pow(i, 2))))
     sleep(10)
     UploadedFile.objects.filter(uploader=PathUser.objects.get(username=username)).delete()
+
     return
 
 
@@ -36,9 +37,9 @@ def find_best_route(user):
     print('Finding best route...')
     do_analysis(files, user)
 
-    for i in range(25):
-        print('oyoy matey' + str(pow(i, 2, 2)))
-    sleep(3)
+    for i in range(3):
+        print('Sleeping for 3 seconds...')
+        sleep(1)
 
     delete_user_uploads(uploader=user)
     print('Filene har blitt slettet. Ferdig med analyse.')
@@ -48,24 +49,26 @@ def find_best_route(user):
 @shared_task
 def do_analysis(files, user):
     print('Doing analysis...')
-
-    path = settings.MEDIA_ROOT + 'data_files/images.png'
+    # pathen blir:
+    # files/bilder/files/testfiles, med dette her.
+    path = os.path.join(settings.MEDIA_ROOT, 'test_files', "images.png")
+    print(path)
     opening = open(path, 'rb')
     img = File(opening)
-
-    result_object = models.ResultFile()
-    result_object.owner = user
-    result_object.file = img
-    result_object.save()
-
     image_object = models.Image()
     image_object.bilde = img
     image_object.uploader = user
     image_object.save()
-
+    img.close()
+    opening.close()
+"""
+    result_object = models.ResultFile()
+    result_object.owner = user
+    result_object.file = img
+    result_object.save()
+"""
 
 
 @shared_task
 def delete_user_uploads(uploader):
     UploadedFile.objects.filter(uploader=uploader).delete()
-

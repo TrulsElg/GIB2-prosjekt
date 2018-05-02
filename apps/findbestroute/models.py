@@ -28,7 +28,7 @@ class UploadedFile(models.Model):
     """
     uploader = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
     file = models.FileField(
-        # upload_to='data_files/',       # should be acceptable...
+        # upload_to='test_files/',       # should be acceptable...
         upload_to=user_directory_path,  # alternativt
         validators=[FileExtensionValidator(
             allowed_extensions=valid_file_types)]
@@ -54,14 +54,16 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
             os.remove(instance.file.path)
 
 
-class ResultFile(models.Model):
-    owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='result_files/')
-
-
 class Image(models.Model):
     uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
     bilde = models.ImageField(upload_to='bilder/')
 
     def get_absolute_url(self):
         return reverse('bilde', args=(self.pk,))
+
+
+# IKKE BRUK TIL NOE SOM HELST
+class ResultFile(models.Model):
+    owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='result_files/')
+

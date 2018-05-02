@@ -14,7 +14,7 @@ from apps.findbestroute.models import *
 
 def file_exists(some_file):
     my_file = some_file
-    destination = settings.MEDIA_ROOT + 'data_files/'
+    destination = settings.MEDIA_ROOT + 'test_files/'
     return True if os.path.isfile(destination + my_file.name) else False
     # returns true if file exists; otherwise false
 #        raise fo.ValidationError(
@@ -63,15 +63,6 @@ def last_opp_filer(request):
                 m.save()
                 print('shape-file saved')
                 # One entry in the DB per file
-
-            result = settings.MEDIA_ROOT + 'data_files/images.png'
-            image_object = Image()
-            image_object.bilde = result
-            image_object.uploader = request.user
-            image_object.save()
-
-            # FIXME files, request kan ikke passes; ma pa en eller annen mate passe objektene.
-            # fiksa...? ingen feil.
 
             # Begin Celery processes
             print('Trying to make best route')
