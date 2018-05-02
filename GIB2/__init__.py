@@ -1,5 +1,4 @@
 # OLD
-
 """from __future__ import absolute_import, unicode_literals
 
 # This will make sure the app is always imported when
@@ -15,6 +14,8 @@ app = Celery('proj')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 """
+
+
 from __future__ import absolute_import, unicode_literals
 
 from .celery import app as celery_app

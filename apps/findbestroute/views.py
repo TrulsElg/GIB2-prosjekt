@@ -1,20 +1,21 @@
 # Create your views here.
 
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-from apps.findbestroute.models import *
-from apps.findbestroute.forms import ImageUploadForm
-import forms
-import os
 import os.path
+import time
+
 from django.conf import settings
-from django import forms as fo
-import tasks
+from django.shortcuts import render, HttpResponseRedirect
+
+import forms
+from apps.findbestroute import tasks
+from apps.findbestroute.forms import ImageUploadForm
+from apps.findbestroute.models import *
 
 
-def clean_my_file(some_file):
+def file_exists(some_file):
     my_file = some_file
     destination = settings.MEDIA_ROOT + 'data_files/'
-    return False if os.path.isfile(destination + my_file.name) else my_file
+    return True if os.path.isfile(destination + my_file.name) else my_file
 #        raise fo.ValidationError(
 #            'A file with the name "' + my_file.name + '" already exists. Please, rename your file and try again.'
 #            )
@@ -41,19 +42,44 @@ def last_opp_filer(request):
         if form.is_valid():
             print('Form is valid...')
             files = request.FILES.getlist('files')
+            jpg_background = request.FILES.getlist('jpg_background')
+
+            for j in jpg_background:
+                if file_exists(j):
+                    continue
+                k = UploadedFile()
+                k.uploader = request.user
+                k.file = j
+                k.save()
+
             for f in files:
-                clean_my_file(f)
+                if file_exists(f):
+                    continue
                 m = UploadedFile()
                 m.uploader = request.user
                 m.file = f
                 m.save()
                 # One entry in the DB per file
-            # FIXME files kan ikke passes; må på en eller annen måte passe objektene
-            # og referere tilbake til selve filene når analyse skal gjøres
-            return analyse(request.user,
-                           files)
+            # FIXME files, request kan ikke passes; ma pa en eller annen mate passe objektene
+            # og referere tilbake til selve filene nar analyse skal gjores
+
+            # trigger async. processes
+            username = PathUser.objects.get(username=request.user)
+            tasks.send_test_email.delay()
+
+            tasks.test.delay(25, username)
+            print('Trying to test')
+            time.sleep(3)
+            print('Trying to make best route')
+            tasks.find_best_route.delay(request)
+
+            # redirect hvis filer har blitt lastet opp
+            return HttpResponseRedirect('analyse.html')
     form = forms.MultiUploadForm()
-    return render(request, 'last_opp_filer.html', {'form': form})
+    return render(request, 'last_opp_filer.html', {'form': form} )
+
+def analyse(request):
+    return render(request=request, template_name='analyse.html', context=None)
 
 
 def lastOppBilder(request):
@@ -69,23 +95,7 @@ def lastOppBilder(request):
     form = ImageUploadForm()
     return render(request, 'bildeopplasting.html', {'form': form})
 
-
-def analyse(user, files):
-    # TODO: analysen, hvordan det enn skal gjores...
-
-    # trigger async. processes
-    tasks.test.delay(25, user)
-    print('Trying to test')
-
-    print('Trying to make best route')
-    tasks.find_best_route.delay(user, files)
-
-    # Etter at analysen er gjort:
-    print('Filer har blitt slettet.')
-
-    # redirect
-    return render(template_name='analyse.html')
-
+# data = httpRequest object; data.FILES.getlist('files') --> .shp filer, etc.
 
 
 def listOppBilder(request):

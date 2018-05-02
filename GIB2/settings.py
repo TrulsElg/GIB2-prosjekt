@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'apps.userregistration',
 ]
 
-CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = ['amqp://localhost:5672',
+                     ]
 
-CELERY_TASK_SOFT_TIME_LIMIT = 60*60*24
+CELERY_TASK_SOFT_TIME_LIMIT = 60*60*4   # timeout etter 4 timer
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

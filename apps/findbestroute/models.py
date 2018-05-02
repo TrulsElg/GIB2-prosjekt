@@ -8,8 +8,8 @@ import os
 # Create your models here.
 
 # LEGG INN SHAPE-FILTYPER HER
-valid_file_types = ['ocd', 'shp', 'dbf', 'shx', 'xml', 'prj',
-                    'shx.xml', ]
+valid_file_types = ['shp', 'dbf', 'shx', 'xml', 'prj',
+                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml']
 
 
 # kopiert fra interwebz, gudene veit om det er nyttig
@@ -20,14 +20,15 @@ def user_directory_path(instance, filename):
 
 class UploadedFile(models.Model):
     """"
+    Hver enkelt fil blir knyttet til modellen
     Burde ha:
         0. Egen mappe for hver bruker
         1. Liste over tillate filformat
     """
     uploader = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
     file = models.FileField(
-        upload_to='data_files/',    # should be acceptable...
-#        upload_to=user_directory_path, #alternativt
+        # upload_to='data_files/',       # should be acceptable...
+        upload_to=user_directory_path,  # alternativt
         validators=[FileExtensionValidator(
             allowed_extensions=valid_file_types)]
         )
@@ -35,16 +36,12 @@ class UploadedFile(models.Model):
     def __str__(self):
         return '"' + self.uploader.username + '"' + ' uploaded: ' + self.file.name
 
-    def find_best_route(self, files):
-        # TODO: do analysis
-        pass
-
     @staticmethod
     def get_user_upload_collection(owner):
         return UploadedFile.objects.filter(owner=owner)
 
 
-# sletter filer etter at de har blitt brukt
+# sletter filer etter at tilknyttet objekt i DB er slettet
 @receiver(models.signals.post_delete, sender=UploadedFile)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
@@ -55,16 +52,11 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
 
-
-# kopiert fra interwebz, gudene veit om det er nyttig
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/{1}'.format(instance.user.id, filename)
-
-
+"""
 class ResultFile(models.Model):
     owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
     file = models.FileField(upload_to='result_files')
+"""
 
 
 class Image(models.Model):
