@@ -60,10 +60,3 @@ class Image(models.Model):
 
     def get_absolute_url(self):
         return reverse('bilde', args=(self.pk,))
-
-
-# IKKE BRUK TIL NOE SOM HELST
-class ResultFile(models.Model):
-    owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='result_files/')
-

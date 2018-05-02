@@ -1,15 +1,22 @@
 # Create your views here.
 
 import os.path
+import tasks
 import time
 from models import Image
 from django.conf import settings
 from django.shortcuts import render, HttpResponseRedirect
-
-import forms
-from apps.findbestroute import tasks
 from apps.findbestroute.forms import ImageUploadForm
 from apps.findbestroute.models import *
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from apps.findbestroute.models import *
+from apps.findbestroute.forms import ImageUploadForm
+import forms
+from tasks import runScript
+import os
+from django.conf import settings
+
+# Create your views here.
 
 
 def file_exists(some_file):
@@ -85,6 +92,8 @@ def lastOppBilder(request):
             m.uploader = request.user
             m.bilde = form.cleaned_data['bilde']
             m.save()
+            # tror ikke dette skal være her
+            # runScript.delay(request.user.pk)
             return HttpResponseRedirect(m.get_absolute_url())
 
     form = ImageUploadForm()
@@ -94,8 +103,8 @@ def lastOppBilder(request):
 
 
 def listOppBilder(request):
-    imageModels = Image.objects.all()
-#    imageModels = Image.objects.filter(uploader=request.user)
+#    imageModels = Image.objects.all()
+    imageModels = Image.objects.filter(uploader=request.user)
     if imageModels.__len__()>0:
         text = "There exists "+str(imageModels.__len__())+" images in database"
     else:
