@@ -32,30 +32,3 @@ class MultiUploadForm(forms.Form):
         model = models.UploadedFile
         fields = 'jpg_background', 'files',
 
-"""
-class ShapeFilesUploadForm(forms.Form):
-    # form contents and metadata
-    area_files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                                 required=True,
-                                 label='Last opp shape-filer (areal)',
-                                 validators=[FileExtensionValidator(
-                                    allowed_extensions=valid_file_types)]
-                                 )
-    line_files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                                 required=True,
-                                 label='Last opp shape-filer (linje)',
-                                 validators=[FileExtensionValidator(
-                                     allowed_extensions=valid_file_types)]
-                                 )
-    point_files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
-                                  required=True,
-                                  label='Last opp shape-filer (punkt)',
-                                  validators=[FileExtensionValidator(
-                                      allowed_extensions=valid_file_types)]
-                                  )
-
-    # what to show:
-    class Meta:
-        model = models.UploadedFile
-        fields = 'area_files', 'line_files', 'point_files'
-"""

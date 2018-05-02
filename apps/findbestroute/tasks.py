@@ -1,72 +1,71 @@
 from celery import shared_task
-from django.core.mail import EmailMessage
+from django.core.files import File
 from apps.userregistration.models import PathUser
 from apps.findbestroute.models import UploadedFile
 from time import sleep
 from django.conf import settings
+import models
+
+"""
+IMPORTANT NOTE:
+
+PASSED FROM views.py: request.user
+"""
 
 
 @shared_task
-def test(number, username):
+def local_test(number, username):
     for i in range(number):
         print('hurr durr  ' + str((pow(i, 2))))
     sleep(10)
-    UploadedFile.objects.filter(uploader = PathUser.objects.get(username=username)).delete()
+    UploadedFile.objects.filter(uploader=PathUser.objects.get(username=username)).delete()
     return
 
 
 # FIXME
 @shared_task
-def find_best_route(request):
+def find_best_route(user):
     """
-    :param request:
-    :param files:
+    :param user = request.user, from views.last_opp_filer(request)
     :return:
     """
-    files = request.FILES.getlist('files')
-    result = do_analysis(files)
-    target_mail = PathUser.objects.get(username=request.user).email
-    send_result_email(target_mail, result)
+    files = UploadedFile.objects.filter(uploader=user)
+    # fetches ALL the uploads belonging to the user. includes shape, jpg...
+    # see valid file__types in models or forms
+
     print('Finding best route...')
-    sleep(5)
-    UploadedFile.objects.filter(uploader=request).delete()
-    print('Filene har blitt slettet.')
+    do_analysis(files, user)
+
+    for i in range(25):
+        print('oyoy matey' + str(pow(i, 2, 2)))
+    sleep(3)
+
+    delete_user_uploads(uploader=user)
+    print('Filene har blitt slettet. Ferdig med analyse.')
 
 
 # FIXME return the image file with the optimal path
 @shared_task
-def do_analysis(files):
+def do_analysis(files, user):
     print('Doing analysis...')
-    file_path = settings.MEDIA_ROOT + 'data_files/images.png'
-    actual_file = __builtins__.file(file_path)
-    return actual_file
 
+    path = settings.MEDIA_ROOT + 'data_files/images.png'
+    opening = open(path, 'rb')
+    img = File(opening)
 
-@shared_task
-def send_result_email(username, file_path):
-    """
-    SKAL SENDE EN EPOST MED VEDLEGG. Dvs bildet med beste veivalg
-    """
-    # TESTING
-    file_path = settings.MEDIA_ROOT + '/data_files/images.png'
+    result_object = models.ResultFile()
+    result_object.owner = user
+    result_object.file = img
+    result_object.save()
 
-    print('Sending email...')
-    email = EmailMessage()
-    email.subject = 'Path-analyse resultat'
-    email.body = 'Hei, \n\nHer er analysens resultater. \n\nTakk for at du bruker Path.'
-    email.from_email = 'no-reply@pathErHeltKonge.com'
-    email.to = PathUser.objects.get(username=username).email
-    email.attach_file(file_path)
-    email.send()
+    image_object = models.Image()
+    image_object.bilde = img
+    image_object.uploader = user
+    image_object.save()
+
 
 
 @shared_task
-def send_test_email():
-    print('Sending test email...')
-    email = EmailMessage()
-    email.subject = 'Path-analyse resultat'
-    email.body = 'Hei, \n\nHer er analysens resultater. \n\nDette var en test.'
-    email.from_email = 'no-reply@HERGAARDETUNNAGUTTAR.com'
-    email.to = ['vicweiwan@gmail.com']
-    email.attach_file(settings.MEDIA_ROOT + 'data_files/krusedull.jpg')
-    email.send()
+def delete_user_uploads(uploader):
+    UploadedFile.objects.filter(uploader=uploader).delete()
+

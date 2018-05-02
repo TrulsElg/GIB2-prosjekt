@@ -2,7 +2,7 @@
 
 import os.path
 import time
-
+from models import Image
 from django.conf import settings
 from django.shortcuts import render, HttpResponseRedirect
 
@@ -15,7 +15,8 @@ from apps.findbestroute.models import *
 def file_exists(some_file):
     my_file = some_file
     destination = settings.MEDIA_ROOT + 'data_files/'
-    return True if os.path.isfile(destination + my_file.name) else my_file
+    return True if os.path.isfile(destination + my_file.name) else False
+    # returns true if file exists; otherwise false
 #        raise fo.ValidationError(
 #            'A file with the name "' + my_file.name + '" already exists. Please, rename your file and try again.'
 #            )
@@ -38,7 +39,7 @@ def vis_filer(request):
 def last_opp_filer(request):
     if request.method == 'POST':
         print('Correct request method...')
-        form = forms.MultiUploadForm(request.POST, request.FILES)
+        form = forms.MultiUploadForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             print('Form is valid...')
             files = request.FILES.getlist('files')
@@ -51,6 +52,7 @@ def last_opp_filer(request):
                 k.uploader = request.user
                 k.file = j
                 k.save()
+                print('jpg-file saved')
 
             for f in files:
                 if file_exists(f):
@@ -59,22 +61,24 @@ def last_opp_filer(request):
                 m.uploader = request.user
                 m.file = f
                 m.save()
+                print('shape-file saved')
                 # One entry in the DB per file
-            # FIXME files, request kan ikke passes; ma pa en eller annen mate passe objektene
-            # og referere tilbake til selve filene nar analyse skal gjores
 
-            # trigger async. processes
-            username = PathUser.objects.get(username=request.user)
-            tasks.send_test_email.delay()
+            result = settings.MEDIA_ROOT + 'data_files/images.png'
+            image_object = Image()
+            image_object.bilde = result
+            image_object.uploader = request.user
+            image_object.save()
 
-            tasks.test.delay(25, username)
-            print('Trying to test')
-            time.sleep(3)
+            # FIXME files, request kan ikke passes; ma pa en eller annen mate passe objektene.
+            # fiksa...? ingen feil.
+
+            # Begin Celery processes
             print('Trying to make best route')
-            tasks.find_best_route.delay(request)
+            tasks.find_best_route.delay(request.user)
 
-            # redirect hvis filer har blitt lastet opp
             return HttpResponseRedirect('analyse.html')
+
     form = forms.MultiUploadForm()
     return render(request, 'last_opp_filer.html', {'form': form} )
 
@@ -99,7 +103,8 @@ def lastOppBilder(request):
 
 
 def listOppBilder(request):
-    imageModels = Image.objects.filter(uploader=request.user)
+    imageModels = Image.objects.all()
+#    imageModels = Image.objects.filter(uploader=request.user)
     if imageModels.__len__()>0:
         text = "There exists "+str(imageModels.__len__())+" images in database"
     else:

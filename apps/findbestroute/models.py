@@ -4,6 +4,7 @@ from apps.userregistration.models import *
 from django.core.validators import FileExtensionValidator
 from django.dispatch import receiver
 import os
+from django.conf import settings
 
 # Create your models here.
 
@@ -38,7 +39,7 @@ class UploadedFile(models.Model):
 
     @staticmethod
     def get_user_upload_collection(owner):
-        return UploadedFile.objects.filter(owner=owner)
+        return UploadedFile.objects.filter(uploader=owner)
 
 
 # sletter filer etter at tilknyttet objekt i DB er slettet
@@ -52,11 +53,10 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
 
-"""
+
 class ResultFile(models.Model):
     owner = models.ForeignKey(to=PathUser, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='result_files')
-"""
+    file = models.FileField(upload_to='result_files/')
 
 
 class Image(models.Model):
