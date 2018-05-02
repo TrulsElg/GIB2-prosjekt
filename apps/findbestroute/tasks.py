@@ -165,10 +165,8 @@ def geoProcess(in_data1, destination_data):
     destXMax = max(XMaxValues)
     destYMax = max(YMaxValues)
 
-    sourceCP = "'" + str(inXMax) + " " + str(inYMax) + "';'" + str(inXMax) + " " + str(inYMin) + "';'" + str(
-        inXMin) + " " + str(inYMax) + "';'" + str(inXMin) + " " + str(inYMin) + "'"
-    targetCP = "'" + str(destXMax) + " " + str(destYMax) + "';'" + str(destXMax) + " " + str(destYMin) + "';'" + str(
-        destXMin) + " " + str(destYMax) + "';'" + str(destXMin) + " " + str(destYMin) + "'"
+    sourceCP = "'" + str(inXMax) + " " + str(inYMax) + "';'" + str(inXMax) + " " + str(inYMin) + "';'" + str(inXMin) + " " + str(inYMax) + "';'" + str(inXMin) + " " + str(inYMin) + "'"
+    targetCP = "'" + str(destXMax) + " " + str(destYMax) + "';'" + str(destXMax) + " " + str(destYMin) + "';'" + str(destXMin) + " " + str(destYMax) + "';'" + str(destXMin) + " " + str(destYMin) + "'"
 
     return arcpy.Warp_management(raster, sourceCP, targetCP, os.path.join(basePath, r"Results", r"geoKart.jpg"),
                                  "POLYORDER1")
@@ -381,14 +379,15 @@ def runScript(uploaderpk):
                           buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
     #Legge til i ArcMap
-    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
+    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.shp"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
     newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp"))
     newlayer.transparency = 50
 
     """ PROBLEMBARN RETT UNDER """
     arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer,
-                                             in_symbology_layer=os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
+                                             in_symbology_layer=templateLayer)
+#                                            in_symbology_layer = os.path.join(basePath, r"Template", r"colorTemplate.lyr"))
     """ PROBLEMBARN RETT OVER """
 
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
