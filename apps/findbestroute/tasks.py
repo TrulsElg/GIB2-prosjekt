@@ -147,9 +147,11 @@ def runScript(uploaderpk):
         arcpy.CheckOutExtension("3D")
 
     global basePath
-    basePath =  r"C:\Users\Truls\PycharmProjects\GIB2-prosjekt\apps\findbestroute\workfiles" #os.path.join(os.getcwd(), r"workfiles")
+    basePath = os.path.join(settings.PROJECT_PATH, 'apps', 'findebestroute', 'workfiles') #r"C:\Users\Truls\PycharmProjects\GIB2-prosjekt\apps\findbestroute\workfiles" #os.path.join(os.getcwd(), r"workfiles")
+    print basePath
+    print os.path.join(os.getcwd(), r"apps", r"findebestroute", r"workfiles")
     env.workspace = basePath
-    mxd = arcpy.mapping.MapDocument(os.path.join(basePath, r"mapDocument.mxd"))
+    mxd = arcpy.mapping.MapDocument(os.path.join(basePath, 'mapDocument.mxd'))
 
     arealsymboler = os.path.join(basePath, r"inData", r"Skog_ar.shp")
     linjesymboler = os.path.join(basePath, r"inData", r"Skog_ln.shp")
