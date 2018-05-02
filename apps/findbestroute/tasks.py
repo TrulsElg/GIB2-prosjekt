@@ -139,10 +139,14 @@ def setMask(start, finish):
 def geoProcess(in_data1, destination_data):
     # basePath = .../apps/findbestroute/workfiles/
     print('pleaaaase   ' + basePath)
-    box = arcpy.MinimumBoundingGeometry_management(destination_data, os.path.join(basePath, "Trash", "box.shp"),
+    arcpy.MinimumBoundingGeometry_management(destination_data, os.path.join(basePath, "Trash", "box"),
                                                    "ENVELOPE")
+    box = os.path.join(basePath, "Trash", "box.shp")
     arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
 #    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
+
+#    for field in arcpy.ListFields(dataset=box):
+#        print(field.__str__())
 
     raster = arcpy.Raster(in_data1)
 
@@ -249,7 +253,6 @@ def runScript(uploaderpk):
 
     arcpy.env.overwriteOutput = True
     arcpy.env.cellSize = 1
-
     # Activate spatial analyst extension
     if arcpy.CheckExtension("Spatial") == "Available":
         arcpy.CheckOutExtension("Spatial")
@@ -337,7 +340,7 @@ def runScript(uploaderpk):
 
     #Sette kostnad paa alle flater
     setCost(mapped)
-
+    print('hey')
     costRaster = arcpy.FeatureToRaster_conversion(mapped,"COST",os.path.join(basePath, r"Results", r"CostRaster.tif"))
 
     #Lage sloperaster
@@ -370,15 +373,24 @@ def runScript(uploaderpk):
     cp.save(os.path.join(basePath, r"Results", r"costpath"))
 
     #Gjore om til polygon med litt bredde
-    arcpy.RasterToPolygon_conversion(in_raster= os.path.join(basePath, r"Results", r"costpath"), out_polygon_features= os.path.join(basePath, r"Results", r"cpPoly.shp"), simplify="SIMPLIFY")
-    arcpy.Buffer_analysis(in_features=os.path.join(basePath, r"Results", r"cpPoly.shp"), out_feature_class= os.path.join(basePath, r"Results", r"LCP.shp"), buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
+    arcpy.RasterToPolygon_conversion(in_raster= os.path.join(basePath, r"Results", r"costpath"),
+                                     out_polygon_features= os.path.join(basePath, r"Results", r"cpPoly.shp"),
+                                     simplify="SIMPLIFY")
+    arcpy.Buffer_analysis(in_features=os.path.join(basePath, r"Results", r"cpPoly.shp"),
+                          out_feature_class=os.path.join(basePath, r"Results", r"LCP.shp"),
+                          buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
     #Legge til i ArcMap
     templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
     newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp"))
     newlayer.transparency = 50
-    arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer, in_symbology_layer=templateLayer)
+
+    """ PROBLEMBARN RETT UNDER """
+    arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer,
+                                             in_symbology_layer=os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
+    """ PROBLEMBARN RETT OVER """
+
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
     arcpy.MakeRasterLayer_management(in_raster=kart, out_rasterlayer=os.path.join(basePath, r"Trash", r"kart"))
     mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"kart"))
