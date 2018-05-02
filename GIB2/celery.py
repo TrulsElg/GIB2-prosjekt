@@ -8,7 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'GIB2.settings')
 app = Celery('findbestroute')
 
 app.config_from_object('django.conf:settings',)
-# fungerte før en gang i tida
+# fungerte for en gang i tida
 # app.config_from_object('django.conf:settings', 'CELERY')
 
 # Load task modules from all registered Django app configs.

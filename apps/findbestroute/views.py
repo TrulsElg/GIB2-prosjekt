@@ -73,8 +73,10 @@ def last_opp_filer(request):
 
             # Begin Celery processes
             print('Trying to make best route')
-            tasks.find_best_route.delay(request.user)
 
+            # KJOYR GUTAR WOOOOHOOOOOOOO
+            tasks.runScript.delay(request.user.pk)
+            tasks.find_best_route.delay(request.user)
             return HttpResponseRedirect('analyse.html')
 
     form = forms.MultiUploadForm()
@@ -92,7 +94,7 @@ def lastOppBilder(request):
             m.uploader = request.user
             m.bilde = form.cleaned_data['bilde']
             m.save()
-            # tror ikke dette skal være her
+            # tror ikke dette skal vere her
             # runScript.delay(request.user.pk)
             return HttpResponseRedirect(m.get_absolute_url())
 

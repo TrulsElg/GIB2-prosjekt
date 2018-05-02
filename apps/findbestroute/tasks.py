@@ -1,12 +1,9 @@
 from celery import shared_task
 from time import sleep
-
 from django.core.files import File
-
 from apps.findbestroute.models import *
 from PIL import Image as pilImage
 from io import BytesIO
-
 import time
 import arcpy
 import math
@@ -208,9 +205,17 @@ def runScript(uploaderpk):
         arcpy.CheckOutExtension("3D")
 
     global basePath
-    basePath =  r"C:\Users\Truls\PycharmProjects\GIB2-prosjekt\apps\findbestroute\workfiles" #os.path.join(os.getcwd(), r"workfiles")
+#    print('forbanna drit KUKOST ' + settings.PROJECT_PATH)
+    sleep(2)
+    basePath = os.path.join(settings.PROJECT_PATH, 'apps', 'findbestroute', 'workfiles')
     env.workspace = basePath
-    mxd = arcpy.mapping.MapDocument(os.path.join(basePath, r"mapDocument.mxd"))
+#    print('forbanna drit HELVEDE ' + basePath)
+    sleep(2)
+# os.path.join(os.getcwd(), r"\apps\findbestroute\workfiles")
+#    basePath = os.path.join(settings.PROJECT_PATH, r"\apps\findbestroute\workfiles")
+#    basePath = os.path.join(os.getcwd(), r"\apps\findbestroute\workfiles")
+
+    mxd = arcpy.mapping.MapDocument(os.path.join(basePath, r'mapdocument.mxd'))
 
     arealsymboler = os.path.join(basePath, r"inData", r"Skog_ar.shp")
     linjesymboler = os.path.join(basePath, r"inData", r"Skog_ln.shp")
@@ -340,13 +345,24 @@ def runScript(uploaderpk):
     addFileToArcMap(os.path.join(basePath, r"inData", r"vikaasenReppesaasen290817.jpg"), mxd)
 
     #Skrive ut bilde av veivalg
-    df = arcpy.mapping.ListDataFrames(mxd)[0]
+#    df = arcpy.mapping.ListDataFrames(mxd)[0]
     B = df.extent.XMax - df.extent.XMin
     H = df.extent.YMax - df.extent.YMin
 
-    out_path = os.path.join(settings.PROJECT_PATH, r"files", r"Dump", r"MapLCP.png")
-    arcpy.mapping.ExportToPNG(map_document= mxd, out_png= out_path, data_frame= df, df_export_width= int(3*B), df_export_height= int(3*H), resolution=225)
+    relative_path_string = os.path.join(r"Dump", r"MapLCP.png")
+    print("hurr  " + settings.PROJECT_PATH)
+    print("durr " + relative_path_string)
+    out_path = os.path.join(settings.PROJECT_PATH, "files", r"Dump", r"MapLCP.png")
+    print(out_path)
+    arcpy.mapping.ExportToPNG(map_document= mxd, out_png= out_path, data_frame= df,
+                              df_export_width= int(3*B), df_export_height= int(3*H), resolution=225)
     print "Finished making image"
+
+    relative_path = os.path.join(r"Dump", "MapLCP.png")
+    img = Image()
+    img.uploader = PathUser.objects.get(pk=uploaderpk)
+    img.bilde = relative_path
+    img.save()
 
 
     end = time.time()
