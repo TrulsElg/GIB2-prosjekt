@@ -56,7 +56,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 class Image(models.Model):
     uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
-    bilde = models.ImageField(upload_to='bilder/')
+    bilde = models.ImageField()
 
     def get_absolute_url(self):
         return reverse('bilde', args=(self.pk,))

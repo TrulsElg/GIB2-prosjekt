@@ -49,18 +49,17 @@ def find_best_route(user):
 @shared_task
 def do_analysis(files, user):
     print('Doing analysis...')
-    # pathen blir:
-    # files/bilder/files/testfiles, med dette her.
-    path = os.path.join(settings.MEDIA_ROOT, 'test_files', "images.png")
+    # legg inn: mappenavn i rekkefolge, deretter filnavn (og -type)
+    path = os.path.join('test_files', "images.png")
     print(path)
-    opening = open(path, 'rb')
-    img = File(opening)
+#    f = open(path, 'r')
+#    file = File(f)
     image_object = models.Image()
-    image_object.bilde = img
+    image_object.bilde = path
     image_object.uploader = user
     image_object.save()
-    img.close()
-    opening.close()
+
+
 """
     result_object = models.ResultFile()
     result_object.owner = user
