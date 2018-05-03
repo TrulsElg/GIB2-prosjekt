@@ -271,7 +271,7 @@ def runScript(uploaderpk):
                   os.path.join(basePath, r"inData", r"Skog_ln.shp"),
                   os.path.join(basePath, r"inData", r"Skog_pt.shp")]
     arealsymboler, linjesymboler, punktsymboler = geometryType(inputShape)
-    kart = geoProcess(os.path.join(basePath, r"indata", r"kart.jpg"), arealsymboler)
+    kart = geoProcess(os.path.join(basePath, r"inData", r"kart.jpg"), arealsymboler)
 
     start = getStart(punktsymboler)
     destination = getDestination(punktsymboler)
@@ -379,7 +379,7 @@ def runScript(uploaderpk):
                           buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
     #Legge til i ArcMap
-    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.shp"))
+    templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
     newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp"))
     newlayer.transparency = 50
@@ -391,11 +391,11 @@ def runScript(uploaderpk):
     """ PROBLEMBARN RETT OVER """
 
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
-    arcpy.MakeRasterLayer_management(in_raster=kart, out_rasterlayer=os.path.join(basePath, r"Trash", r"kart"))
-    mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"kart"))
+    arcpy.MakeRasterLayer_management(in_raster=os.path.join(basePath, r"Results", r"geoKart.jpg"), out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
+    mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"rasterkart"))
     arcpy.mapping.AddLayer(df, mapLayer, "BOTTOM")
 
-    # Lage postsirkler og linje og legge til dette i ArcMap
+    # Lage postsirkler og linje og legge til dette i ArcGIS
     points = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
                                                  out_name="points",
                                                  geometry_type="POINT")
