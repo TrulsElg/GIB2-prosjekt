@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Suksess!{% endblock %}
+{% block title %}Et bilde!{% endblock %}
 {% block content %}
     <div align="center" style="width: 400px">
 
         <p>Lastet opp av bruker: {{ Image.uploader }}</p>
-        <img src="{{ Image.bilde.url }}">
+        <img src="{{ Image.bilde.url }}" style="max-width: 1000px; max-height: 1000px">
 
     </div>
 {% endblock %}

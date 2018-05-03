@@ -76,7 +76,6 @@ def last_opp_filer(request):
 
             # KJOYR GUTAR WOOOOHOOOOOOOO
             tasks.runScript.delay(request.user.pk)
-            tasks.find_best_route.delay(request.user)
             return HttpResponseRedirect('analyse.html')
 
     form = forms.MultiUploadForm()
@@ -106,7 +105,7 @@ def lastOppBilder(request):
 
 def listOppBilder(request):
 #    imageModels = Image.objects.all()
-    imageModels = Image.objects.filter(uploader=request.user)
+    imageModels = Image.objects.all()
     if imageModels.__len__()>0:
         text = "There exists "+str(imageModels.__len__())+" images in database"
     else:

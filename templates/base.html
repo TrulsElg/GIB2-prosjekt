@@ -32,15 +32,14 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" ><!--href="https://www.norkart.no/" target="_blank"-->
-              <img src="{% static 'images/Path.png' %}" style="height: 30px">
+              <a href="/"><img src="{% static 'images/Path.png' %}" style="height: 30px"></a>
           </a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-              <li><a href="/">Index</a></li>
-              <li><a href="/finnbesterute">Finn</a></li>
+             <!-- <li><a href="/finnbesterute">Finn</a></li> -->
               <li><a href="/finnbesterute/lastoppbilde">Last opp bilde</a></li>
               {% if user.is_authenticated %}
               <li><a href="/finnbesterute/visbilder">Bilder</a></li>

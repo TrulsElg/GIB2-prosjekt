@@ -10,8 +10,10 @@
 
             {% for image in images %}
                 {% if image.bilde %}
-                    <p>Lastet opp av: {{ image.uploader }}</p>
-                    <a href="{% url 'bilde' image.pk%}"><img src="{{ image.bilde.url }}" style="max-width: 200px; max-height: 200px"></a>
+                    <div style="padding: 10px">
+                        <p>Lastet opp av: {{ image.uploader }}</p>
+                        <a href="{% url 'bilde' image.pk%}"><img src="{{ image.bilde.url }}" style="max-width: 200px; max-height: 200px"></a>
+                    </div>
                 {% endif %}
             {% endfor %}
 

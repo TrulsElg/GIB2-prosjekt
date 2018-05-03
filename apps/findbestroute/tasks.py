@@ -10,73 +10,11 @@ from apps.findbestroute.models import UploadedFile
 from time import sleep
 from django.conf import settings
 import models
-import os
-"""
-PASSED FROM views.py: request.user; now named user.
+import os, shutil
 
-CURRENTLY BUGGED AT: line 154; trying to extract extents after they are added.
-Extents are not added properly...?
-"""
-
-
-@shared_task
-def local_test(number, user):
-    for i in range(number):
-        print('hurr durr  ' + str((pow(i, 2))))
-    sleep(10)
-    UploadedFile.objects.filter(uploader=PathUser.objects.get(username=user)).delete()
-
-    return
-
-
-# FIXME
-@shared_task
-def find_best_route(user):
-    """
-    :param user = request.user, from views.last_opp_filer(request)
-    :return:
-    """
-    files = UploadedFile.objects.filter(uploader=user)
-    # fetches ALL the uploads belonging to the user. includes shape, jpg...
-    # see valid file__types in models or forms
-
-    print('Finding best route...')
-    do_analysis(files, user)
-
-    for i in range(3):
-        print('Sleeping for '+ str(3-i) + ' seconds...')
-        sleep(1)
-
-    delete_user_uploads(uploader=user)
-    print('Filene har blitt slettet. Ferdig med analyse.')
-
-
-# FIXME return the image file with the optimal path
-@shared_task
-def do_analysis(files, user):
-    print('Doing analysis...')
-    # legg inn: mappenavn i rekkefolge, deretter filnavn (og -type)
-    path = os.path.join('test_files', "images.png")
-    print(path)
-#    f = open(path, 'r')
-#    file = File(f)
-    image_object = models.Image()
-    image_object.bilde = path
-    image_object.uploader = user
-    image_object.save()
-
-
-"""
-    result_object = models.ResultFile()
-    result_object.owner = user
-    result_object.file = img
-    result_object.save()
-"""
-
-
-@shared_task
-def delete_user_uploads(uploader):
-    UploadedFile.objects.filter(uploader=uploader).delete()
+@shared_task()
+def delete_user_uploads(uploaderpk):
+    UploadedFile.objects.filter(uploader=PathUser.objects.get(pk=uploaderpk)).delete()
 
 
 def getStart(pt):
@@ -98,17 +36,21 @@ def getDestination(pt):
 
 
 def setMask(start, finish):
+    startX = None
+    startY = None
+    destinationX = None
+    destinationY = None
     features = arcpy.UpdateCursor(start)
     for feature in features:
         startX = feature.POINT_X
         startY = feature.POINT_Y
-    del feature, features
+    del features
     features = arcpy.UpdateCursor(finish)
     for feature in features:
         destinationX = feature.POINT_X
         destinationY = feature.POINT_Y
         fid = feature.FID
-    del feature, features
+    del features
     length = (math.sqrt(math.pow(destinationX-startX,2)+math.pow(destinationY-startY,2)))
     directionX = (destinationX - startX) / (math.sqrt(math.pow(destinationX-startX,2)+math.pow(destinationY-startY,2)))
     directionY = (destinationY - startY) / (math.sqrt(math.pow(destinationX-startX,2)+math.pow(destinationY-startY,2)))
@@ -133,17 +75,29 @@ def setMask(start, finish):
                        destinationY - (directionX * length / 2) + (directionY * length / 5))))
     del cursor
     mask = arcpy.MinimumBoundingGeometry_management(maskPoints, os.path.join(basePath, r"Trash", r"mask.shp"), "RECTANGLE_BY_WIDTH")
+    del maskPoints
     return mask
 
 
 def geoProcess(in_data1, destination_data):
     # basePath = .../apps/findbestroute/workfiles/
     print('pleaaaase   ' + basePath)
-    arcpy.MinimumBoundingGeometry_management(destination_data, os.path.join(basePath, "Trash", "box"),
-                                                   "ENVELOPE")
+    arcpy.MinimumBoundingGeometry_management(in_features=destination_data,
+                                             out_feature_class=os.path.join(basePath, "Trash", "box"),
+                                             geometry_type="ENVELOPE")
+    # original box over
     box = os.path.join(basePath, "Trash", "box.shp")
+
+#    fields = arcpy.ListFields(boxobj)
+#    for field in fields:
+#        print(field.name)
+
     arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
+
 #    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
+#    fields2 = arcpy.ListFields(boxobj)
+#    for field2 in fields2:
+#        print(field2.name)
 
 #    for field in arcpy.ListFields(dataset=box):
 #        print(field.__str__())
@@ -176,17 +130,26 @@ def geometryType(infiles):
     polygon = None
     line = None
     point = None
+    hasPolygon = False
+    hasPolyline = False
+    hasPoint = False
+    breakBoolean = True
     for file in infiles:
         desc = arcpy.Describe(file)
         geometry = desc.shapeType
 
         if (geometry.lower() == "Polygon".lower()):
             polygon = file
+            hasPolygon = True
         elif (geometry.lower() == "Polyline".lower()):
             line = file
+            hasPolyline = True
         elif (geometry.lower() == "Point".lower()):
             point = file
-    return polygon, line, point
+            hasPoint = True
+    if hasPolygon and hasPolyline and hasPoint:
+        breakBoolean = False
+    return polygon, line, point, breakBoolean
 
 def getExtentOfMap(linjesymboler, SlopeL = 101.000, SlopeL2 = 102.000):
     try:
@@ -267,11 +230,22 @@ def runScript(uploaderpk):
 
     mxd = arcpy.mapping.MapDocument(os.path.join(basePath, r'mapdocument.mxd'))
 
-    inputShape = [os.path.join(basePath, r"inData", r"Skog_ar.shp"),
-                  os.path.join(basePath, r"inData", r"Skog_ln.shp"),
-                  os.path.join(basePath, r"inData", r"Skog_pt.shp")]
-    arealsymboler, linjesymboler, punktsymboler = geometryType(inputShape)
-    kart = geoProcess(os.path.join(basePath, r"inData", r"kart.jpg"), arealsymboler)
+    onlyfiles = []
+    kart_path = None
+    for file in os.listdir(os.path.join(basePath, r"inData")):
+        if file.endswith(".shp"):
+            onlyfiles.append(os.path.join(basePath, r"inData", file))
+        elif file.endswith(".jpg"):
+            kart_path = os.path.join(basePath, r"inData", file)
+
+    for el in onlyfiles:
+        print("File: " + el.__str__())
+    print("Map file: " + kart_path.__str__())
+    arealsymboler, linjesymboler, punktsymboler, breakBoolean = geometryType(onlyfiles)
+    if (breakBoolean):
+        print("Datafiles not containing all shapefiles( either point, polyline or polygon)")
+        return
+    kart = os.path.join(settings.PROJECT_PATH, r"apps", r"findbestroute", r"workfiles", r"inData", r"kart.jpg") #geoProcess(kart_path, arealsymboler)
 
     start = getStart(punktsymboler)
     destination = getDestination(punktsymboler)
@@ -378,6 +352,10 @@ def runScript(uploaderpk):
                           out_feature_class=os.path.join(basePath, r"Results", r"LCP.shp"),
                           buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
+    df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
+    for lyr in arcpy.mapping.ListLayers(mxd, "", df):
+        arcpy.mapping.RemoveLayer(df, lyr)
+    print("Deleted lyr's in mxd")
     #Legge til i ArcMap
     templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
@@ -391,7 +369,7 @@ def runScript(uploaderpk):
     """ PROBLEMBARN RETT OVER """
 
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
-    arcpy.MakeRasterLayer_management(in_raster=os.path.join(basePath, r"Results", r"geoKart.jpg"), out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
+    arcpy.MakeRasterLayer_management(in_raster=kart, out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
     mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"rasterkart"))
     arcpy.mapping.AddLayer(df, mapLayer, "BOTTOM")
 
@@ -399,6 +377,9 @@ def runScript(uploaderpk):
     points = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
                                                  out_name="points",
                                                  geometry_type="POINT")
+
+
+    del destination
     start = getStart(pt)
     destination = getDestination(pt)
     features = arcpy.UpdateCursor(start)
@@ -412,6 +393,7 @@ def runScript(uploaderpk):
     cursor = arcpy.da.InsertCursor(points, ("fid", "SHAPE@XY"))
     cursor.insertRow((1, (startX, startY)))
     cursor.insertRow((2, (destX, destY)))
+    del destination
 
     outerCircle = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
                                                       out_name="circles1.shp",
@@ -454,21 +436,50 @@ def runScript(uploaderpk):
     B = df.extent.XMax - df.extent.XMin
     H = df.extent.YMax - df.extent.YMin
 
-    relative_path_string = os.path.join(r"Dump", r"MapLCP.png")
+    filename = str(uploaderpk)+"_"+time.strftime("%d-%m-%Y")+"_"+time.strftime("%H-%M-%S")+".png"
+    relative_path_string = os.path.join(r"Dump", filename)
     print("hurr  " + settings.PROJECT_PATH)
     print("durr " + relative_path_string)
-    out_path = os.path.join(settings.PROJECT_PATH, "files", r"Dump", r"MapLCP.png")
+    out_path = os.path.join(settings.PROJECT_PATH, "files", r"Dump", filename)
     print(out_path)
     arcpy.mapping.ExportToPNG(map_document= mxd, out_png= out_path, data_frame= df,
                               df_export_width= int(3*B), df_export_height= int(3*H), resolution=225)
     print("Finished making image")
 
-    relative_path = os.path.join(r"Dump", "MapLCP.png")
+    #relative_path = os.path.join(r"Dump", "MapLCP.png")
     img = Image()
     img.uploader = PathUser.objects.get(pk=uploaderpk)
-    img.bilde = relative_path
+    img.bilde = relative_path_string
     img.save()
 
+
+    folder = os.path.join(basePath, r"Trash")
+    for file in os.listdir(folder):
+        filepath = os.path.join(folder, file)
+        try:
+            if os.path.isfile(filepath):
+                print "Removing "+filepath
+                os.remove(filepath)
+            elif os.path.isdir(filepath):
+                print "Removing "+filepath
+                shutil.rmtree(filepath)
+        except Exception as e:
+            print(e)
+
+    folder = os.path.join(basePath, r"Results")
+    for file in os.listdir(folder):
+        filepath = os.path.join(folder, file)
+        try:
+            if os.path.isfile(filepath):
+                print "Removing " + filepath
+                os.remove(filepath)
+            elif os.path.isdir(filepath):
+                print "Removing " + filepath
+                shutil.rmtree(filepath)
+        except Exception as e:
+            print(e)
+
+    delete_user_uploads.delay(uploaderpk)
 
     end = time.time()
     print(end-startTime)
