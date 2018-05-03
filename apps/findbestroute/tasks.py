@@ -232,11 +232,11 @@ def runScript(uploaderpk):
 
     onlyfiles = []
     kart_path = None
-    for file in os.listdir(os.path.join(basePath, r"inData")):
+    for file in os.listdir(os.path.join(settings.PROJECT_PATH, r"files", r"user_"+str(uploaderpk))):
         if file.endswith(".shp"):
-            onlyfiles.append(os.path.join(basePath, r"inData", file))
+            onlyfiles.append(os.path.join(settings.PROJECT_PATH, r"files", r"user_"+str(uploaderpk), file))
         elif file.endswith(".jpg"):
-            kart_path = os.path.join(basePath, r"inData", file)
+            kart_path = os.path.join(settings.PROJECT_PATH, r"files", r"user_"+str(uploaderpk), file)
 
     for el in onlyfiles:
         print("File: " + el.__str__())
@@ -245,7 +245,7 @@ def runScript(uploaderpk):
     if (breakBoolean):
         print("Datafiles not containing all shapefiles( either point, polyline or polygon)")
         return
-    kart = os.path.join(settings.PROJECT_PATH, r"apps", r"findbestroute", r"workfiles", r"inData", r"kart.jpg") #geoProcess(kart_path, arealsymboler)
+    kart = kart_path #os.path.join(settings.PROJECT_PATH, r"apps", r"findbestroute", r"workfiles", r"inData", r"kart.jpg") #geoProcess(kart_path, arealsymboler)
 
     start = getStart(punktsymboler)
     destination = getDestination(punktsymboler)
