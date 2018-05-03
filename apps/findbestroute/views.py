@@ -78,7 +78,7 @@ def last_opp_filer(request):
 
             # KJOYR GUTAR WOOOOHOOOOOOOO
             tasks.runScript.delay(request.user.pk)
-            tasks.delete_user_uploads.delay(request.user.pk)
+            #tasks.delete_user_uploads.delay(request.user.pk)
             return HttpResponseRedirect('analyse.html')
 
     form = forms.MultiUploadForm()
