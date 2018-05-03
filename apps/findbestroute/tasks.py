@@ -84,20 +84,7 @@ def geoProcess(in_data1, destination_data):
     # original box over
     box = os.path.join(basePath, "Trash", "box.shp")
 
-#    fields = arcpy.ListFields(boxobj)
-#    for field in fields:
-#        print(field.name)
-
     arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
-
-#    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
-#    fields2 = arcpy.ListFields(boxobj)
-#    for field2 in fields2:
-#        print(field2.name)
-
-#    for field in arcpy.ListFields(dataset=box):
-#        print(field.__str__())
-
     raster = arcpy.Raster(in_data1)
 
     inXMax = raster.extent.XMax
@@ -355,7 +342,7 @@ def runScript(uploaderpk):
     #Legge til i ArcMap
     templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
-    newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp"))
+    newlayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"LCP.shp")) # veien
     newlayer.transparency = 50
 
     """ PROBLEMBARN RETT UNDER """
@@ -364,16 +351,16 @@ def runScript(uploaderpk):
 #                                            in_symbology_layer = os.path.join(basePath, r"Template", r"colorTemplate.lyr"))
     """ PROBLEMBARN RETT OVER """
 
-    arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
-    arcpy.MakeRasterLayer_management(in_raster=os.path.join(basePath, r"Results", r"geoKart.jpg"), out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
+    arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")  # veien
+    arcpy.MakeRasterLayer_management(in_raster=os.path.join(basePath, r"Results", r"geoKart.jpg"), # bakgrunn
+                                     out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
     mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"rasterkart"))
-    arcpy.mapping.AddLayer(df, mapLayer, "BOTTOM")
+    arcpy.mapping.AddLayer(df, mapLayer, "BOTTOM")  # kartet
 
     # Lage postsirkler og linje og legge til dette i ArcGIS
     points = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
                                                  out_name="points",
                                                  geometry_type="POINT")
-
 
     del destination
     start = getStart(pt)
@@ -407,9 +394,9 @@ def runScript(uploaderpk):
     symLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template", r"color2.lyr"))
     circleLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"circles.shp"))
     arcpy.ApplySymbologyFromLayer_management(in_layer=circleLayer, in_symbology_layer=symLayer)
-    arcpy.mapping.AddLayer(data_frame=df, add_layer=circleLayer, add_position="TOP")
+    arcpy.mapping.AddLayer(data_frame=df, add_layer=circleLayer, add_position="TOP")  # sirkler
 
-    # Lage postlinje
+    # Lage postlinje # sirkler
     lines = arcpy.CreateFeatureclass_management(out_path=os.path.join(basePath, r"Trash"),
                                                 out_name="line.shp",
                                                 geometry_type="POLYGON")
@@ -423,7 +410,7 @@ def runScript(uploaderpk):
                           line_end_type="FLAT")
     lineLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"line.shp"))
     arcpy.ApplySymbologyFromLayer_management(in_layer=lineLayer, in_symbology_layer=symLayer)
-    arcpy.mapping.AddLayer(data_frame=df, add_layer=lineLayer, add_position="TOP")
+    arcpy.mapping.AddLayer(data_frame=df, add_layer=lineLayer, add_position="TOP") # luftlinje
 
     mxd.save()
 
@@ -454,28 +441,28 @@ def runScript(uploaderpk):
         filepath = os.path.join(folder, file)
         try:
             if os.path.isfile(filepath):
-                print "Removing "+filepath
+ #               print "Removing "+filepath
                 os.remove(filepath)
             elif os.path.isdir(filepath):
-                print "Removing "+filepath
+ #               print "Removing "+filepath
                 shutil.rmtree(filepath)
         except Exception as e:
             print(e)
-
+    print 'OH MY LAWD'
     folder = os.path.join(basePath, r"Results")
     for file in os.listdir(folder):
         filepath = os.path.join(folder, file)
         try:
             if os.path.isfile(filepath):
-                print "Removing " + filepath
+#                print "Removing " + filepath
                 os.remove(filepath)
             elif os.path.isdir(filepath):
-                print "Removing " + filepath
+#                print "Removing " + filepath
                 shutil.rmtree(filepath)
         except Exception as e:
             print(e)
 
-    delete_user_uploads.delay(uploaderpk)
+#    delete_user_uploads.delay(uploaderpk)
 
     end = time.time()
     print(end-startTime)
