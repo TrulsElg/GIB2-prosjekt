@@ -61,6 +61,8 @@ def last_opp_filer(request):
                 k.save()
                 print('jpg-file saved')
 
+                del k
+
             for f in files:
                 if file_exists(f):
                     continue
@@ -70,12 +72,13 @@ def last_opp_filer(request):
                 m.save()
                 print('shape-file saved')
                 # One entry in the DB per file
-
+                del m
             # Begin Celery processes
             print('Trying to make best route')
 
             # KJOYR GUTAR WOOOOHOOOOOOOO
             tasks.runScript.delay(request.user.pk)
+            tasks.delete_user_uploads.delay(request.user.pk)
             return HttpResponseRedirect('analyse.html')
 
     form = forms.MultiUploadForm()
