@@ -1,11 +1,9 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.db import models as m
 import models
 from django.core.validators import FileExtensionValidator
 
-valid_file_types = ['ocd', 'shp', 'dbf', 'shx', 'xml', 'prj',
-                    'shx.xml', ]
+valid_file_types = ['shp', 'dbf', 'shx', 'xml', 'prj',
+                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml']
 
 
 class ImageUploadForm(forms.Form):
@@ -16,16 +14,21 @@ class ImageUploadForm(forms.Form):
 
 
 class MultiUploadForm(forms.Form):
-    # form contents and metadata
+    jpg_background = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
+                                     required=True,
+                                     label='Last opp georeferert JPG fil',
+                                     validators=[FileExtensionValidator(
+                                         allowed_extensions=valid_file_types)]
+                                     )
     files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
                             required=True,
-                            label='Last opp filer',
+                            label='Last opp alle SHAPE-filer til bruk (areal, linje, punkt)',
                             validators=[FileExtensionValidator(
-                                    allowed_extensions=valid_file_types)]
+                                allowed_extensions=valid_file_types)]
                             )
 
     # what to show:
     class Meta:
         model = models.UploadedFile
-        fields = 'files'
+        fields = 'jpg_background', 'files',
 
