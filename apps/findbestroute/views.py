@@ -76,7 +76,6 @@ def last_opp_filer(request):
 
             # KJOYR GUTAR WOOOOHOOOOOOOO
             tasks.runScript.delay(request.user.pk)
-            tasks.find_best_route.delay(request.user)
             return HttpResponseRedirect('analyse.html')
 
     form = forms.MultiUploadForm()
