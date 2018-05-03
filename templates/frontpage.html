@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Forside{% endblock %}
 {% block content %}
-    <p>This is front page...</p>
+    <div style="padding: 30px">
+        <h1>Velkommen til forsiden!</h1>
+    </div>
+    <div style="padding: 10px">
+        <img src="{% static 'images/Path.png' %}" style="max-height: 400px; max-width: 400px">
+    </div>
+    <h3 style="padding: 30px">Veifinner for orientering</h3>
+    
 {% endblock %}

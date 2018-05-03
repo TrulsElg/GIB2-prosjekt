@@ -1,24 +1,36 @@
+# Create your views here.
+
+import os.path
+import tasks
+import time
+from models import Image
+from django.conf import settings
+from django.shortcuts import render, HttpResponseRedirect
+from apps.findbestroute.forms import ImageUploadForm
+from apps.findbestroute.models import *
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from apps.findbestroute.models import *
-
 from apps.findbestroute.forms import ImageUploadForm
 import forms
+from tasks import runScript
 import os
 from django.conf import settings
 
 # Create your views here.
 
 
+def file_exists(some_file):
+    my_file = some_file
+    destination = settings.MEDIA_ROOT + 'test_files/'
+    return True if os.path.isfile(destination + my_file.name) else False
+    # returns true if file exists; otherwise false
+#        raise fo.ValidationError(
+#            'A file with the name "' + my_file.name + '" already exists. Please, rename your file and try again.'
+#            )
+
+
 def index(request):
     return render(request, 'frontpage.html')
-
-
-"""
-def file_upload(request):
-    save_path = os.path.join(settings.MEDIA_ROOT, 'uploads', request.FILES['file'])
-    path = default_storage.save(save_path, request.FILES['file'])
-    return default_storage.path(path)
-"""
 
 
 def vis_filer(request):
@@ -38,21 +50,42 @@ def last_opp_filer(request):
         if form.is_valid():
             #print('Form is valid...')
             files = request.FILES.getlist('files')
+            jpg_background = request.FILES.getlist('jpg_background')
+
+            for j in jpg_background:
+                if file_exists(j):
+                    continue
+                k = UploadedFile()
+                k.uploader = request.user
+                k.file = j
+                k.save()
+                print('jpg-file saved')
+
+                del k
+
             for f in files:
+                if file_exists(f):
+                    continue
                 m = UploadedFile()
                 m.uploader = request.user
                 m.file = f
-                if UploadedFile.objects.filter(
-                        uploader=request.user,
-                        file=f):
-                    #print('skipped file')
-                    continue    # file already exists.
                 m.save()
+                print('shape-file saved')
                 # One entry in the DB per file
-            # valid files received; do analysis maybe?
-            return analyse(request)
+                del m
+            # Begin Celery processes
+            print('Trying to make best route')
+
+            # KJOYR GUTAR WOOOOHOOOOOOOO
+            tasks.runScript.delay(request.user.pk)
+            #tasks.delete_user_uploads.delay(request.user.pk)
+            return HttpResponseRedirect('analyse.html')
+
     form = forms.MultiUploadForm()
-    return render(request, 'last_opp_filer.html', {'form': form})
+    return render(request, 'last_opp_filer.html', {'form': form} )
+
+def analyse(request):
+    return render(request=request, template_name='analyse.html', context=None)
 
 
 def lastOppBilder(request):
@@ -63,28 +96,19 @@ def lastOppBilder(request):
             m.uploader = request.user
             m.bilde = form.cleaned_data['bilde']
             m.save()
+            # tror ikke dette skal vere her
+            # runScript.delay(request.user.pk)
             return HttpResponseRedirect(m.get_absolute_url())
 
     form = ImageUploadForm()
     return render(request, 'bildeopplasting.html', {'form': form})
 
-
-def analyse(request):
-    # FIXME kjoyr analysen, hvordan det enn skal gjores.
-    # Kanskje sende resultat til brukerens email pga async?
-    template_name = 'analyse.html'  # Replace with your template.
-    success_url = 'analyse'  # Replace with your URL or reverse().
-    return render(request, template_name=template_name)
-
-
-def handle_uploaded_file(f, file_owner):
-    with open('uploads/'+file_owner + '/', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+# data = httpRequest object; data.FILES.getlist('files') --> .shp filer, etc.
 
 
 def listOppBilder(request):
-    imageModels = Image.objects.filter(uploader=request.user)
+#    imageModels = Image.objects.all()
+    imageModels = Image.objects.all()
     if imageModels.__len__()>0:
         text = "There exists "+str(imageModels.__len__())+" images in database"
     else:

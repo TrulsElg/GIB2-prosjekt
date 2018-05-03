@@ -16,9 +16,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-
-
-
 MEDIA_ROOT = 'files/'
 MEDIA_URL = '/files/'
 
@@ -31,8 +28,9 @@ SECRET_KEY = 'ov@!+^1d42=l!dpsyt5n11z3(0k43rko)+m*=3d(u@qi=ar80&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+# alternativt:
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -46,8 +44,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.findbestroute',
-    'apps.userregistration'
+    'apps.userregistration',
 ]
+
+CELERY_BROKER_URL = ['amqp://localhost:5672',
+                     ]
+
+CELERY_TASK_SOFT_TIME_LIMIT = 60*60*4   # timeout etter 4 timer
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+# alternativt
+# BROKER_URL ='amqp://localhost'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
