@@ -11,6 +11,7 @@ Required installations:
 Install the following with default settings
 1. Erlang
 2. RabbitMQ
+
 Get the command line/terminal up (CMD) and enter the following lines:
 
 `    C:\Python27\ArcGIS10.6\python.exe -m pip install django`
