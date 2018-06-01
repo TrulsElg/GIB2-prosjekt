@@ -299,8 +299,11 @@ def runScript(uploaderpk):
     costRaster = arcpy.FeatureToRaster_conversion(mapped,"COST",os.path.join(basePath, r"Results", r"CostRaster.tif"))
 
     #Lage sloperaster
+    """KAN SLETTE FILER HER, de brukes ikke lenger uansett i resten av koden."""
+    delete_user_uploads(uploaderpk)
 
     #create a TIN of the area
+    """KAN SKAPE PROBLEMER, e.g. error 999999"""
     tin = arcpy.CreateTin_3d(out_tin= os.path.join(basePath, r"Results", r"TIN"), spatial_reference= "#", in_features= os.path.join(basePath, r"Trash", r"hoydedata.shp") +" HOEYDE masspoints")
 
     # Replace a layer/table view name with a path to a dataset (which can be a layer file) or create the layer/table view within the script
