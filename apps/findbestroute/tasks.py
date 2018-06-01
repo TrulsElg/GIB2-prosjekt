@@ -79,52 +79,6 @@ def setMask(start, finish):
     return mask
 
 
-def geoProcess(in_data1, destination_data):
-    # basePath = .../apps/findbestroute/workfiles/
-    print('pleaaaase   ' + basePath)
-    arcpy.MinimumBoundingGeometry_management(in_features=destination_data,
-                                             out_feature_class=os.path.join(basePath, "Trash", "box"),
-                                             geometry_type="ENVELOPE")
-    # original box over
-    box = os.path.join(basePath, "Trash", "box.shp")
-
-#    fields = arcpy.ListFields(boxobj)
-#    for field in fields:
-#        print(field.name)
-
-    arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
-
-#    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
-#    fields2 = arcpy.ListFields(boxobj)
-#    for field2 in fields2:
-#        print(field2.name)
-
-#    for field in arcpy.ListFields(dataset=box):
-#        print(field.__str__())
-
-    raster = arcpy.Raster(in_data1)
-
-    inXMax = raster.extent.XMax
-    inYMax = raster.extent.YMax
-    inXMin = raster.extent.XMin
-    inYMin = raster.extent.YMin
-
-    XminValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_X")]
-    YMinValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_Y")]
-    XMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_X")]
-    YMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_Y")]
-
-    destXMin = min(XminValues)
-    destYMin = min(YMinValues)
-    destXMax = max(XMaxValues)
-    destYMax = max(YMaxValues)
-
-    sourceCP = "'" + str(inXMax) + " " + str(inYMax) + "';'" + str(inXMax) + " " + str(inYMin) + "';'" + str(inXMin) + " " + str(inYMax) + "';'" + str(inXMin) + " " + str(inYMin) + "'"
-    targetCP = "'" + str(destXMax) + " " + str(destYMax) + "';'" + str(destXMax) + " " + str(destYMin) + "';'" + str(destXMin) + " " + str(destYMax) + "';'" + str(destXMin) + " " + str(destYMin) + "'"
-
-    return arcpy.Warp_management(raster, sourceCP, targetCP, os.path.join(basePath, r"Results", r"geoKart.jpg"),
-                                 "POLYORDER1")
-
 
 def geometryType(infiles):
     polygon = None
@@ -150,6 +104,7 @@ def geometryType(infiles):
     if hasPolygon and hasPolyline and hasPoint:
         breakBoolean = False
     return polygon, line, point, breakBoolean
+
 
 def getExtentOfMap(linjesymboler, SlopeL = 101.000, SlopeL2 = 102.000):
     try:
@@ -203,6 +158,55 @@ def setCost(fc):
         print("Tried but failed to set cost")
 
 """
+NOT NEEDED FOR GEOREFERRED FILES, DO NOT USE !!!
+"""
+def geoProcess(in_data1, destination_data):
+    # basePath = .../apps/findbestroute/workfiles/
+    print('pleaaaase   ' + basePath)
+    arcpy.MinimumBoundingGeometry_management(in_features=destination_data,
+                                             out_feature_class=os.path.join(basePath, "Trash", "box"),
+                                             geometry_type="ENVELOPE")
+    # original box over
+    box = os.path.join(basePath, "Trash", "box.shp")
+
+    #    fields = arcpy.ListFields(boxobj)
+    #    for field in fields:
+    #        print(field.name)
+
+    arcpy.AddGeometryAttributes_management(Input_Features=box, Geometry_Properties="EXTENT")
+
+    #    # arcpy.AddGeometryAttributes_management(Input_Features=os.path.join(basePath, "Trash", "box.shp"), Geometry_Properties="EXTENT")
+    #    fields2 = arcpy.ListFields(boxobj)
+    #    for field2 in fields2:
+    #        print(field2.name)
+
+    #    for field in arcpy.ListFields(dataset=box):
+    #        print(field.__str__())
+
+    raster = arcpy.Raster(in_data1)
+
+    inXMax = raster.extent.XMax
+    inYMax = raster.extent.YMax
+    inXMin = raster.extent.XMin
+    inYMin = raster.extent.YMin
+
+    XminValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_X")]
+    YMinValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MIN_Y")]
+    XMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_X")]
+    YMaxValues = [row[0] for row in arcpy.da.SearchCursor(box, "EXT_MAX_Y")]
+
+    destXMin = min(XminValues)
+    destYMin = min(YMinValues)
+    destXMax = max(XMaxValues)
+    destYMax = max(YMaxValues)
+
+    sourceCP = "'" + str(inXMax) + " " + str(inYMax) + "';'" + str(inXMax) + " " + str(inYMin) + "';'" + str(inXMin) + " " + str(inYMax) + "';'" + str(inXMin) + " " + str(inYMin) + "'"
+    targetCP = "'" + str(destXMax) + " " + str(destYMax) + "';'" + str(destXMax) + " " + str(destYMin) + "';'" + str(destXMin) + " " + str(destYMax) + "';'" + str(destXMin) + " " + str(destYMin) + "'"
+
+    return arcpy.Warp_management(raster, sourceCP, targetCP, os.path.join(basePath, r"Results", "basemap", r"geoKart.jpg"),
+                                 "POLYORDER1")
+
+"""
 
 HER BE MAGIC
 
@@ -245,7 +249,13 @@ def runScript(uploaderpk):
     if (breakBoolean):
         print("Datafiles not containing all shapefiles( either point, polyline or polygon)")
         return
-    kart = kart_path #os.path.join(settings.PROJECT_PATH, r"apps", r"findbestroute", r"workfiles", r"inData", r"kart.jpg") #geoProcess(kart_path, arealsymboler)
+# DO NOT USE #
+#    kart = os.path.join(settings.PROJECT_PATH, r"apps", r"findbestroute", r"workfiles", r"inData", r"kart.jpg") #
+# kart = geoProcess(kart_path, arealsymboler)
+
+    """kart_path: MUST BE A GEOREF'D MAP OF THE SAME AREA... lol"""
+    kart = kart_path
+
 
     start = getStart(punktsymboler)
     destination = getDestination(punktsymboler)
@@ -318,29 +328,30 @@ def runScript(uploaderpk):
     #Lage sloperaster
 
     #create a TIN of the area
-    tin = arcpy.CreateTin_3d(out_tin= os.path.join(basePath, r"Results", r"TIN"), spatial_reference= "#", in_features= os.path.join(basePath, r"Trash", r"hoydedata.shp") +" HOEYDE masspoints")
+#    tin = arcpy.CreateTin_3d(out_tin= os.path.join(basePath, r"Results", r"TIN"), spatial_reference= "#",
+#                             in_features= [os.path.join(basePath, r"Trash", r"hoydedata.shp"), "HOEYDE Mass_Points"])
 
     # Replace a layer/table view name with a path to a dataset (which can be a layer file) or create the layer/table view within the script
     # The following inputs are layers or table views: "hoydeTIN"
-    tinRaster = arcpy.TinRaster_3d(in_tin=os.path.join(basePath, r"Results", r"TIN"), out_raster=os.path.join(basePath, r"Results", "hRaster"), data_type="FLOAT", method="LINEAR", sample_distance="CELLSIZE 1", z_factor="1")
+#    tinRaster = arcpy.TinRaster_3d(in_tin=os.path.join(basePath, r"Results", r"TIN"), out_raster=os.path.join(basePath, r"Results", "hRaster"), data_type="FLOAT", method="LINEAR", sample_distance="CELLSIZE 1", z_factor="1")
 
     # Replace a layer/table view name with a path to a dataset (which can be a layer file) or create the layer/table view within the script
     # The following inputs are layers or table views: "hraster"
-    slope = arcpy.Slope_3d(in_raster=os.path.join(basePath, r"Results", r"hRaster"), out_raster=os.path.join(basePath, r"Results", r"slope"), output_measurement="DEGREE", z_factor="1")
+#    slope = arcpy.Slope_3d(in_raster=os.path.join(basePath, r"Results", r"hRaster"), out_raster=os.path.join(basePath, r"Results", r"slope"), output_measurement="DEGREE", z_factor="1")
 
     # Reklassifisering av slope
-    reMapRange = RemapRange([[0, 0.5, 100], [0.5, 1, 101], [1, 2, 102], [2, 3, 103], [3, 4, 104], [4, 5, 105], [5, 6, 106], [6, 7, 107],[7, 8, 108], [8, 9, 109], [9, 10, 110], [10, 11, 111], [11, 12, 112], [12, 13, 113], [13, 14, 114], [14, 15, 115], [15, 16, 116], [16, 17, 117], [17, 18, 118], [18, 19, 119], [19, 20, 120], [20, 90, 150]])
-    slope_reclass = Reclassify(in_raster= os.path.join(basePath, r"Results", r"slope"), reclass_field= "VALUE", remap= reMapRange)
-    slope_reclass.save(os.path.join(basePath, r"Results", r"slopeReclass"))
+#    reMapRange = RemapRange([[0, 0.5, 100], [0.5, 1, 101], [1, 2, 102], [2, 3, 103], [3, 4, 104], [4, 5, 105], [5, 6, 106], [6, 7, 107],[7, 8, 108], [8, 9, 109], [9, 10, 110], [10, 11, 111], [11, 12, 112], [12, 13, 113], [13, 14, 114], [14, 15, 115], [15, 16, 116], [16, 17, 117], [17, 18, 118], [18, 19, 119], [19, 20, 120], [20, 90, 150]])
+#    slope_reclass = Reclassify(in_raster= os.path.join(basePath, r"Results", r"slope"), reclass_field= "VALUE", remap= reMapRange)
+#    slope_reclass.save(os.path.join(basePath, r"Results", r"slopeReclass"))
 
     # Rasterkalkulator som lager raster som tar hensyn til hoyde i kostnadsrasteret
-    finalCostRaster = Raster(os.path.join(basePath, r"Results", r"CostRaster.tif")) * (Raster(os.path.join(basePath, r"Results", r"slopeReclass")) / 100)
+    finalCostRaster = Raster(os.path.join(basePath, r"Results", r"CostRaster.tif")) #* (Raster(os.path.join(basePath, r"Results", r"slopeReclass")) / 100)
 
     #Regne ut leastcostpath
     cdr = arcpy.sa.CostDistance(start,finalCostRaster)
-    cdr.save(os.path.join(basePath, r"Results", r"costDistance"))
+    cdr.save(os.path.join(basePath, r"Results", r"costdist"))
     cbr = arcpy.sa.CostBackLink(start,finalCostRaster)
-    cbr.save(os.path.join(basePath, r"Results", r"Costback"))
+    cbr.save(os.path.join(basePath, r"Results", r"costback"))
     cp = arcpy.sa.CostPath(destination,cdr,cbr,"EACH_CELL")
     cp.save(os.path.join(basePath, r"Results", r"costpath"))
 
@@ -353,9 +364,12 @@ def runScript(uploaderpk):
                           buffer_distance_or_field= "2", line_side="FULL", line_end_type="FLAT", dissolve_option="LIST")
 
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
+
+    """DELETE LAYERS, NECESSARY ALSO FOR WORKING LOCALLY"""
     for lyr in arcpy.mapping.ListLayers(mxd, "", df):
         arcpy.mapping.RemoveLayer(df, lyr)
     print("Deleted lyr's in mxd")
+
     #Legge til i ArcMap
     templateLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template",  r"colorTemplate.lyr"))
     df = arcpy.mapping.ListDataFrames(mxd, "*")[0]
@@ -363,11 +377,12 @@ def runScript(uploaderpk):
     newlayer.transparency = 50
 
     """ PROBLEMBARN RETT UNDER """
-    arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer,
-                                             in_symbology_layer=templateLayer)
-#                                            in_symbology_layer = os.path.join(basePath, r"Template", r"colorTemplate.lyr"))
+#    arcpy.ApplySymbologyFromLayer_management(in_layer=newlayer,                                     # COLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR
+#                                             in_symbology_layer=templateLayer)
+#                                             in_symbology_layer = os.path.join(basePath, r"Template", r"colorTemplate.lyr"))
     """ PROBLEMBARN RETT OVER """
 
+    """ NEDERSTE LAG HERREGUD DETTA SKAL LIKSOM BLI BAKGRUNNEN """
     arcpy.mapping.AddLayer(df, newlayer, "BOTTOM")
     arcpy.MakeRasterLayer_management(in_raster=kart, out_rasterlayer=os.path.join(basePath, r"Results", r"rasterkart"))
     mapLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Results", r"rasterkart"))
@@ -410,7 +425,7 @@ def runScript(uploaderpk):
     arcpy.Erase_analysis(outerCircle, innerCircle, circle)
     symLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Template", r"color2.lyr"))
     circleLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"circles.shp"))
-    arcpy.ApplySymbologyFromLayer_management(in_layer=circleLayer, in_symbology_layer=symLayer)
+#    arcpy.ApplySymbologyFromLayer_management(in_layer=circleLayer, in_symbology_layer=symLayer)     # COLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR
     arcpy.mapping.AddLayer(data_frame=df, add_layer=circleLayer, add_position="TOP")
 
     # Lage postlinje
@@ -426,10 +441,23 @@ def runScript(uploaderpk):
     arcpy.Buffer_analysis(in_features=lineFeat, out_feature_class=lines, buffer_distance_or_field=2.5,
                           line_end_type="FLAT")
     lineLayer = arcpy.mapping.Layer(os.path.join(basePath, r"Trash", r"line.shp"))
-    arcpy.ApplySymbologyFromLayer_management(in_layer=lineLayer, in_symbology_layer=symLayer)
+
+#    arcpy.ApplySymbologyFromLayer_management(in_layer=lineLayer, in_symbology_layer=symLayer) # COLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR
+
     arcpy.mapping.AddLayer(data_frame=df, add_layer=lineLayer, add_position="TOP")
 
+    """ GETTING THE PICTURE ON THE BOTTOM; NOT PERFORMED: ADJUSTMENTS (geoProcessing) """
+#    os.path.join(basePath, r"Results", "geoKart.jpg")
+#    arcpy.MakeRasterLayer_management(in_raster=    os.path.join(basePath, r"Results", "basemap" "geoKart.jpg"),
+#                                     #os.path.join(settings.PROJECT_PATH, r"files", r"user_"+str(uploaderpk) + r"." + r"$.jpg"),
+#                                     out_rasterlayer = "tempResult")
+#    mapLayer = arcpy.mapping.Layer("tempResult")
+#    arcpy.mapping.AddLayer(data_frame=df, add_layer=mapLayer, add_position="BOTTOM")
+
     mxd.save()
+
+    print "CHECK SHIT OUT YO"
+    sleep(20)
 
 
     #Skrive ut bilde av veivalg
@@ -451,6 +479,7 @@ def runScript(uploaderpk):
     img.uploader = PathUser.objects.get(pk=uploaderpk)
     img.bilde = relative_path_string
     img.save()
+    del img, mxd, out_path, mapLayer, lineLayer, circle, circleLayer, innerCircle, outerCircle, kart_path
 
 
     folder = os.path.join(basePath, r"Trash")
@@ -479,7 +508,5 @@ def runScript(uploaderpk):
         except Exception as e:
             print(e)
 
-    delete_user_uploads.delay(uploaderpk)
-
     end = time.time()
-    print(end-startTime)
+    print("FINISH TIME:    " + str(end-startTime))
