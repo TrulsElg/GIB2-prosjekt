@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe57fe9c-2a8d-40ab-b16a-4eaf38f1f146" name="Default" comment="Uploading DB with 3 working photos">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ar.dbf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ar.shp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ar.shx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ln.dbf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ln.shp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ln.shx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.dbf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.sbn" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.sbx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.shp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.shx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/geoKart.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/kart.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ar.cpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_ln.cpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/Skog_pt.cpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/geoKart.jgw" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/geoKart.jpg.aux.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/geoKart.jpg.ovr" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/inData/geoKart.jpg.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/findbestroute/workfiles/MapDocument.mxd" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/MapDocument.mxd" />
+    <list default="true" id="fe57fe9c-2a8d-40ab-b16a-4eaf38f1f146" name="Default" comment="Fargelegging går passe dårlig. Bugs: locks på brukerfiler">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/files/dump/1_02-06-2018_01-13-58.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/GIB2.iml" afterPath="$PROJECT_DIR$/.idea/GIB2.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/findbestroute/forms.py" afterPath="$PROJECT_DIR$/apps/findbestroute/forms.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/findbestroute/models.py" afterPath="$PROJECT_DIR$/apps/findbestroute/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/findbestroute/tasks.py" afterPath="$PROJECT_DIR$/apps/findbestroute/tasks.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/findbestroute/views.py" afterPath="$PROJECT_DIR$/apps/findbestroute/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/last_opp_filer.html" afterPath="$PROJECT_DIR$/templates/last_opp_filer.html" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/apps/findbestroute/workfiles/MapDocument.mxd" afterPath="$PROJECT_DIR$/apps/findbestroute/workfiles/mapdoc/MapDocument.mxd" />
     </list>
     <ignored path="GIB2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,9 +41,11 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/findbestroute/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1403">
-              <caret line="11" column="39" lean-forward="false" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-              <folding />
+            <state relative-caret-position="450">
+              <caret line="80" column="0" lean-forward="false" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+              <folding>
+                <element signature="e#27#41#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -69,9 +53,15 @@
       <file leaf-file-name="tasks.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/findbestroute/tasks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="379" column="0" lean-forward="true" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="214">
+              <caret line="577" column="84" lean-forward="true" selection-start-line="577" selection-start-column="84" selection-end-line="577" selection-end-column="84" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+                <element signature="e#3820#4153#0" expanded="false" />
+                <element signature="e#6596#7278#0" expanded="false" />
+                <element signature="e#8358#8612#0" expanded="false" />
+                <element signature="e#9938#12289#1" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -88,41 +78,42 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>newlayer</find>
-      <find>ini</find>
-      <find>sourceCP</find>
-      <find>æ|ø|å</find>
-      <find>box =</find>
-      <find>in_</find>
-      <find>basepa</find>
+      <find>searchCursor</find>
+      <find>Cursor</find>
+      <find>utsnitt</find>
+      <find>with</find>
+      <find>point_X</find>
+      <find>breakboolean</find>
+      <find>da.insertcursor</find>
+      <find>reset()</find>
+      <find>reset</find>
+      <find>setmask</find>
+      <find>cursor</find>
+      <find>feature.SYMBOL</find>
+      <find>floorsymbols</find>
+      <find>cursor(</find>
       <find>mxd</find>
-      <find>start</find>
-      <find>hraster</find>
-      <find>basepat</find>
-      <find>colortemplate</find>
-      <find>jpg</find>
-      <find>df</find>
-      <find>path</find>
-      <find>rasterkart</find>
-      <find>costDistance</find>
-      <find>costdistance</find>
-      <find>geokart</find>
-      <find>geoKart</find>
-      <find>inData</find>
+      <find>arealsymboler</find>
+      <find>del</find>
+      <find>startX</find>
+      <find>mask</find>
+      <find>point</find>
+      <find>dataframe</find>
+      <find>endPoint</find>
       <find>kart_path</find>
-      <find>in_data1</find>
-      <find>geoprocess</find>
-      <find>kart</find>
-      <find>costdist</find>
-      <find>costback</find>
-      <find>costpath</find>
-      <find>basemap</find>
-      <find>applysym</find>
+      <find>df</find>
+      <find>pt</find>
+      <find>end</find>
+      <find>destination</find>
+      <find>start</find>
+      <find>getStart(</find>
+      <find>contrast</find>
     </findStrings>
     <replaceStrings>
       <replace>$</replace>
       <replace>box2</replace>
       <replace>ar</replace>
+      <replace>df</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -142,6 +133,7 @@
         <entry key="$PROJECT_DIR$" value="plswork" />
       </map>
     </option>
+    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -166,12 +158,12 @@
         <option value="$PROJECT_DIR$/apps/findbestroute/workfiles/geoprocess.py" />
         <option value="$PROJECT_DIR$/templates/list_opp_bilder.html" />
         <option value="$PROJECT_DIR$/templates/analyse.html" />
-        <option value="$PROJECT_DIR$/templates/last_opp_filer.html" />
         <option value="$PROJECT_DIR$/GIB2/celery.py" />
         <option value="$PROJECT_DIR$/GIB2/__init__.py" />
+        <option value="$PROJECT_DIR$/templates/last_opp_filer.html" />
+        <option value="$PROJECT_DIR$/apps/findbestroute/forms.py" />
         <option value="$PROJECT_DIR$/apps/findbestroute/models.py" />
         <option value="$PROJECT_DIR$/apps/findbestroute/views.py" />
-        <option value="$PROJECT_DIR$/apps/findbestroute/forms.py" />
         <option value="$PROJECT_DIR$/apps/findbestroute/tasks.py" />
       </list>
     </option>
@@ -206,7 +198,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -275,6 +267,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dump" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="latest_version" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="latest_version" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="apps" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -316,52 +326,12 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="workfiles" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="latest_version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="latest_version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="apps" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="findbestroute" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workfiles" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Results" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="latest_version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="latest_version" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GIB2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -373,16 +343,17 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\delete_immediately\latest_version\apps\findbestroute\workfiles\mapdoc" />
+      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\findbestroute\workfiles\Trash" />
+      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\findbestroute" />
+      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\selleri" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\delete_immediately\latest_version\apps\findbestroute\workfiles\inData" />
       <recent name="D:\delete_immediately\latest_version\apps\findbestroute\workfiles\Results\basemap" />
       <recent name="D:\delete_immediately\latest_version\apps\findbestroute\workfiles\Results" />
       <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\files\data_files" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\findbestroute\workfiles\Trash" />
-      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\findbestroute" />
-      <recent name="C:\Users\victor\PycharmProjects\GIB2-prosjekt\apps\selleri" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -848,7 +819,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525379622808</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&#10;&#10;eneste som mangler: fargelegge symboler">
+      <created>1527887860970</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1527887860970</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView">
@@ -864,16 +842,17 @@
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26119402" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32883817" sideWeight="0.4978678" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32883817" sideWeight="0.4936034" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32780084" sideWeight="0.63006395" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.48294243" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.29957357" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32780084" sideWeight="0.4003198" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32780084" sideWeight="0.5996802" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2595949" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32780084" sideWeight="0.37313432" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.4978678" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32780084" sideWeight="0.6268657" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -940,7 +919,8 @@
     <MESSAGE value="Can upload at least 1 map for analysis" />
     <MESSAGE value="Can upload at least 1 map for analysis, newest 1" />
     <MESSAGE value="Uploading DB with 3 working photos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Uploading DB with 3 working photos" />
+    <MESSAGE value="JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&#10;&#10;eneste som mangler: fargelegge symboler" />
+    <option name="LAST_COMMIT_MESSAGE" value="JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&#10;&#10;eneste som mangler: fargelegge symboler" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -950,61 +930,11 @@
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="9" />
+      <option name="time" value="13" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/last_opp_filer.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/frontpage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="28" lean-forward="false" selection-start-line="3" selection-start-column="28" selection-end-line="3" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/findbestroute/views.py" />
-    <entry file="file://$PROJECT_DIR$/findbestroute/urls.py" />
-    <entry file="file://$PROJECT_DIR$/GIB2/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="22" column="25" lean-forward="false" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/frontpage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="28" lean-forward="false" selection-start-line="3" selection-start-column="28" selection-end-line="3" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/findbestroute/views.py" />
-    <entry file="file://$PROJECT_DIR$/findbestroute/urls.py" />
-    <entry file="file://$PROJECT_DIR$/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="37" lean-forward="false" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GIB2/views.py" />
-    <entry file="file://$PROJECT_DIR$/findbestroute/urls.py" />
-    <entry file="file://$PROJECT_DIR$/findbestroute/views.py" />
-    <entry file="file://$PROJECT_DIR$/Logo/Path.png" />
-    <entry file="file://$PROJECT_DIR$/templates/frontpage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="28" lean-forward="false" selection-start-line="3" selection-start-column="28" selection-end-line="3" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GIB2/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -1083,24 +1013,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/CostRaster.tfw" />
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/geoprocess.py" />
-    <entry file="file://$PROJECT_DIR$/templates/list_opp_bilder.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="13" column="84" lean-forward="false" selection-start-line="13" selection-start-column="69" selection-end-line="13" selection-end-column="84" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/test.py" />
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/CostDis_start1.tif">
       <provider selected="true" editor-type-id="images">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/urls.py">
@@ -1117,58 +1033,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/files/user_1/kart.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/last_opp_filer.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg.ovr">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jgwx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg.aux.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#24#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/files/user_1/kart.jpg" />
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg.ovr" />
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jgwx" />
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg.aux.xml" />
     <entry file="file://$PROJECT_DIR$/GIB2/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1176,48 +1048,142 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#56#0" expanded="false" />
-          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg" />
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/basemap/geoKart.jgwx" />
+    <entry file="file://$PROJECT_DIR$/files/dump/2_03-05-2018_22-19-38.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/2_03-05-2018_22-27-19.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_01-06-2018_22-32-22.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_01-06-2018_23-13-20.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_01-03-03.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_01-36-37.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_02-48-25.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_02-45-59.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_02-44-34.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_01-13-58.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_03-00-18.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/list_opp_bilder.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="66" lean-forward="false" selection-start-line="13" selection-start-column="66" selection-end-line="13" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/last_opp_filer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="101">
+          <caret line="23" column="39" lean-forward="true" selection-start-line="23" selection-start-column="39" selection-end-line="23" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/findbestroute/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="12" column="87" lean-forward="false" selection-start-line="12" selection-start-column="87" selection-end-line="12" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="382">
+          <caret line="58" column="59" lean-forward="true" selection-start-line="58" selection-start-column="59" selection-end-line="58" selection-end-column="59" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1403">
-          <caret line="11" column="39" lean-forward="false" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding />
+        <state relative-caret-position="450">
+          <caret line="80" column="0" lean-forward="false" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding>
+            <element signature="e#27#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/geoKart.jpg">
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_04-30-36.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/findbestroute/workfiles/Results/basemap/geoKart.jgwx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_06-57-49.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/files/dump/1_02-06-2018_07-40-46.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/findbestroute/tasks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="379" column="0" lean-forward="true" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="214">
+          <caret line="577" column="84" lean-forward="true" selection-start-line="577" selection-start-column="84" selection-end-line="577" selection-end-column="84" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#3820#4153#0" expanded="false" />
+            <element signature="e#6596#7278#0" expanded="false" />
+            <element signature="e#8358#8612#0" expanded="false" />
+            <element signature="e#9938#12289#1" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

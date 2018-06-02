@@ -3,7 +3,7 @@ import models
 from django.core.validators import FileExtensionValidator
 
 valid_file_types = ['shp', 'dbf', 'shx', 'xml', 'prj',
-                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml']
+                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml', 'jpg.xml', 'ovr', 'jgw']
 
 
 class ImageUploadForm(forms.Form):

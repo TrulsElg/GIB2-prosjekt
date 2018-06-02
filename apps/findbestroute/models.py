@@ -10,7 +10,7 @@ from django.conf import settings
 
 # LEGG INN SHAPE-FILTYPER HER
 valid_file_types = ['shp', 'dbf', 'shx', 'xml', 'prj',
-                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml']
+                    'shx.xml', 'jpg', 'aux', 'aux.xml', 'jpg.ovr', 'jgwx', 'jpg.aux.xml', 'jpg.xml', 'ovr', 'jgw']
 
 
 # kopiert fra interwebz, gudene veit om det er nyttig
@@ -42,8 +42,20 @@ class UploadedFile(models.Model):
         return UploadedFile.objects.filter(uploader=owner)
 
 
+class Image(models.Model):
+    uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
+    bilde = models.ImageField()
+
+    def __str__(self):
+        return '' + self.uploader.username + ' analyzed: ' + self.bilde.name
+
+    def get_absolute_url(self):
+        return reverse('bilde', args=(self.pk,))
+
+
 # sletter filer etter at tilknyttet objekt i DB er slettet
 @receiver(models.signals.post_delete, sender=UploadedFile)
+@receiver(models.signals.post_delete, sender=Image)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     Deletes file from filesystem
@@ -52,14 +64,3 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
-
-
-class Image(models.Model):
-    uploader = models.ForeignKey(PathUser, blank=True, null=True, on_delete=models.SET_NULL)
-    bilde = models.ImageField()
-
-    def __str__(self):
-        return '' + self.uploader.username + ' uploaded: ' + self.bilde.name
-
-    def get_absolute_url(self):
-        return reverse('bilde', args=(self.pk,))
